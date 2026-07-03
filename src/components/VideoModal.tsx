@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import CustomVideoPlayer from "./CustomVideoPlayer";
 
@@ -39,7 +40,7 @@ export default function VideoModal({ isOpen, onClose, videoUrl, title, image }: 
 
   if (!mounted) return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div 
@@ -47,7 +48,7 @@ export default function VideoModal({ isOpen, onClose, videoUrl, title, image }: 
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 pt-[calc(1rem+64px)] sm:p-8 sm:pt-[calc(2rem+64px)]"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 pt-[calc(1rem+64px)] sm:p-8 sm:pt-[calc(2rem+64px)]"
           onClick={onClose}
         >
           <motion.div 
@@ -62,6 +63,7 @@ export default function VideoModal({ isOpen, onClose, videoUrl, title, image }: 
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

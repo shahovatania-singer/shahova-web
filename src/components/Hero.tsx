@@ -21,8 +21,11 @@ export default function Hero() {
       </div>
 
       {/* Carousel */}
-      <div className="mb-auto">
+      <div className="mb-auto w-full flex flex-col items-center">
         <Carousel />
+        <p className="text-xs font-semibold tracking-[0.15em] text-gray-300 uppercase mt-6 text-center">
+          CLICK ANY CARD TO PLAY
+        </p>
       </div>
     </section>
   );
