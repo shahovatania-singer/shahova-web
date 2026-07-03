@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { background: #333; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+  .modal-wrapper {
+    position: relative;
+    background: #0a0a0a;
+    border-radius: 16px;
+    overflow: hidden;
+    /* shrink-wrap magic */
+    max-width: 90vw;
+    max-height: 85vh;
+    display: flex;
+  }
+  video, img {
+    max-width: 90vw;
+    max-height: 85vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+</style>
+</head>
+<body>
+  <div class="modal-wrapper">
+    <video src="https://www.w3schools.com/html/mov_bbb.mp4" controls></video>
+  </div>
+</body>
+</html>

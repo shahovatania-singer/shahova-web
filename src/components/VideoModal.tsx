@@ -1,0 +1,67 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import CustomVideoPlayer from "./CustomVideoPlayer";
+
+interface VideoModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  videoUrl: string;
+  title: string;
+  image?: string;
+}
+
+export default function VideoModal({ isOpen, onClose, videoUrl, title, image }: VideoModalProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+      window.addEventListener("keydown", handleKeyDown);
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
+  if (!mounted) return null;
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.4 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 pt-[calc(1rem+64px)] sm:p-8 sm:pt-[calc(2rem+64px)]"
+          onClick={onClose}
+        >
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
+            className="relative w-fit h-fit max-w-[95vw] max-h-[90vh] bg-[#0a0a0a] rounded-2xl overflow-hidden shadow-[0_0_80px_rgba(220,38,38,0.15)] ring-1 ring-white/10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <CustomVideoPlayer url={videoUrl} onClose={onClose} imageUrl={image} />
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
