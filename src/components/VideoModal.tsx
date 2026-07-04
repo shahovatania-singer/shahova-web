@@ -48,7 +48,7 @@ export default function VideoModal({ isOpen, onClose, videoUrl, title, image }: 
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 pt-[calc(1rem+64px)] sm:p-8 sm:pt-[calc(2rem+64px)]"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 sm:p-8"
           onClick={onClose}
         >
           <motion.div 
