@@ -21,7 +21,8 @@ export default function Contact() {
       </div>
 
       {/* Social Icons */}
-      <div className="flex flex-row flex-wrap items-center justify-center gap-10 md:gap-16 py-10">
+      <div className="flex justify-center py-10 w-full">
+        <div className="flex flex-col items-start md:flex-row md:items-center gap-10 md:gap-16">
         {/* Telegram */}
         <a 
           href="https://t.me/Shahova_singer" 
@@ -56,11 +57,12 @@ export default function Contact() {
           className="group flex items-center gap-4 text-white hover:text-red-600 transition-colors duration-300"
           aria-label="Email"
         >
-          <svg width="68" height="68" viewBox="0 0 24 24" fill="currentColor">
+          <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
             <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
           </svg>
           <span className="text-xl md:text-2xl font-semibold uppercase tracking-wider">Email</span>
         </a>
+        </div>
       </div>
     </section>
   );
