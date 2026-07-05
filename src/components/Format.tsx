@@ -54,7 +54,7 @@ export default function Format() {
       </div>
 
       {/* Heading */}
-      <div className="mb-24">
+      <div className="mb-12 md:mb-24">
         <h2
           className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black leading-[0.85] tracking-tighter uppercase"
           style={{ textShadow: "0px 0px 40px rgba(255,255,255,0.4)" }}
@@ -66,7 +66,7 @@ export default function Format() {
       {/* Content Columns */}
       <div className="flex flex-col lg:flex-row gap-20 lg:gap-32 items-center lg:items-stretch w-full">
         {/* Left Column - List */}
-        <div className="w-full lg:w-[35%] flex flex-col gap-4 mt-8 lg:mt-0">
+        <div className="w-full lg:w-[35%] flex flex-col gap-4">
           {FORMATS.map((format) => {
             const isSelected = stackOrder[0] === format.id;
 

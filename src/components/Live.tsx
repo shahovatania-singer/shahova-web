@@ -74,8 +74,8 @@ export default function Live() {
       id="live"
       className="relative w-full z-10 py-24 px-8 max-w-[1440px] mx-auto flex flex-col mb-20"
     >
-      {/* Header */}
-      <div className="mb-12">
+      {/* Heading */}
+      <div className="mb-12 md:mb-24">
         <p className="text-xs font-semibold tracking-[0.15em] text-gray-300 uppercase mb-4">
           Feel the magic of the stage
         </p>

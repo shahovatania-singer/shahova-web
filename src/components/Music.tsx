@@ -142,8 +142,8 @@ export default function Music() {
         onEnded={handleEnded}
       />
 
-      {/* Header */}
-      <div className="mb-16 z-20">
+      {/* Heading */}
+      <div className="mb-12 md:mb-24 z-20">
         <p className="text-xs font-semibold tracking-[0.15em] text-gray-300 uppercase mb-4">
           Listen to her journey
         </p>
