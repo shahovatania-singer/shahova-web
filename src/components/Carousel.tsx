@@ -91,7 +91,7 @@ export default function Carousel() {
   const lastXRef = useRef(0);
   const hasDraggedRef = useRef(false);
   const lastTimeRef = useRef(0);
-  
+
   const speedRef = useRef(50); // px per sec
   const isVideoOpenRef = useRef(false);
 
@@ -119,7 +119,11 @@ export default function Carousel() {
       const safeDt = Math.min(dt, 50);
 
       // Advance offset if not interacted with
-      if (!isHoveredRef.current && !isDraggingRef.current && !isVideoOpenRef.current) {
+      if (
+        !isHoveredRef.current &&
+        !isDraggingRef.current &&
+        !isVideoOpenRef.current
+      ) {
         offsetRef.current += (speedRef.current * safeDt) / 1000;
       }
 
@@ -156,8 +160,8 @@ export default function Carousel() {
     const handlePointerUp = () => {
       isDraggingRef.current = false;
       if (trackRef.current) {
-        trackRef.current.style.cursor = 'grab';
-        trackRef.current.style.userSelect = '';
+        trackRef.current.style.cursor = "grab";
+        trackRef.current.style.userSelect = "";
       }
       // Small delay to allow click event to be blocked if we dragged
       setTimeout(() => {
@@ -165,11 +169,11 @@ export default function Carousel() {
       }, 50);
     };
 
-    window.addEventListener('pointerup', handlePointerUp);
-    window.addEventListener('pointercancel', handlePointerUp);
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerUp);
     return () => {
-      window.removeEventListener('pointerup', handlePointerUp);
-      window.removeEventListener('pointercancel', handlePointerUp);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerUp);
     };
   }, []);
 
@@ -178,17 +182,17 @@ export default function Carousel() {
     hasDraggedRef.current = false;
     startXRef.current = e.pageX;
     lastXRef.current = e.pageX;
-    
+
     const target = e.target as HTMLElement;
     if (target && target.setPointerCapture) {
       try {
         target.setPointerCapture(e.pointerId);
       } catch (err) {}
     }
-    
+
     if (trackRef.current) {
-      trackRef.current.style.cursor = 'grabbing';
-      trackRef.current.style.userSelect = 'none';
+      trackRef.current.style.cursor = "grabbing";
+      trackRef.current.style.userSelect = "none";
     }
   };
 
@@ -196,23 +200,23 @@ export default function Carousel() {
     if (!isDraggingRef.current) return;
     const x = e.pageX;
     const dx = x - lastXRef.current;
-    
+
     if (Math.abs(x - startXRef.current) > 5) {
       hasDraggedRef.current = true;
     }
-    
+
     offsetRef.current -= dx;
     lastXRef.current = x;
   };
 
   const handlePointerEnter = (e: React.PointerEvent) => {
-    if (e.pointerType === 'mouse') {
+    if (e.pointerType === "mouse") {
       isHoveredRef.current = true;
     }
   };
 
   const handlePointerLeave = (e: React.PointerEvent) => {
-    if (e.pointerType === 'mouse') {
+    if (e.pointerType === "mouse") {
       isHoveredRef.current = false;
     }
   };
@@ -228,20 +232,20 @@ export default function Carousel() {
 
   return (
     <>
-      <div 
+      <div
         ref={containerRef}
         className="relative w-full max-w-[100vw] overflow-hidden mt-12 py-10 touch-pan-y select-none"
       >
         {/* Top Curve Geometry */}
-        <div className="pointer-events-none absolute -top-[66px] md:-top-[56px] -left-[11%] md:-left-[25%] w-[122%] md:w-[150%] h-[84px] md:h-[140px] bg-[#0d0d0d] rounded-[100%] z-20" />
+        <div className="pointer-events-none absolute -top-[56px] md:-top-[56px] -left-[25%] w-[150%] h-[110px] md:h-[140px] bg-[#0d0d0d] rounded-[100%] z-20" />
 
         {/* Bottom Curve Geometry */}
-        <div className="pointer-events-none absolute -bottom-[44px] md:-bottom-[41px] -left-[10%] md:-left-[25%] w-[120%] md:w-[150%] h-[84px] md:h-[140px] bg-[#0d0d0d] rounded-[100%] z-20" />
+        <div className="pointer-events-none absolute -bottom-[41px] md:-bottom-[41px] -left-[25%] w-[150%] h-[110px] md:h-[140px] bg-[#0d0d0d] rounded-[100%] z-20" />
 
-        <div 
+        <div
           ref={trackRef}
           className="flex w-max will-change-transform"
-          style={{ transform: 'translate3d(0, 0, 0)', cursor: 'grab' }}
+          style={{ transform: "translate3d(0, 0, 0)", cursor: "grab" }}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerEnter={handlePointerEnter}

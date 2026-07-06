@@ -55,7 +55,7 @@ export default function Header() {
         </a>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-12 text-sm font-medium tracking-wider text-gray-300">
+        <nav className="hidden md:flex items-center gap-12 text-sm font-medium tracking-wider text-gray-300">
           {navLinks.map((link) => (
             <a
               key={link.id}
@@ -69,11 +69,11 @@ export default function Header() {
         </nav>
 
         {/* Right side: Get in touch & Mobile Menu Toggle */}
-        <div className="flex items-center space-x-5 sm:space-x-8">
+        <div className="flex items-center gap-5 sm:gap-8">
           <a
             href="#contact"
             onClick={(e) => handleScroll(e, "contact")}
-            className="hidden md:flex items-center space-x-2 text-[10px] sm:text-sm font-medium tracking-wider cursor-pointer group"
+            className="hidden md:flex items-center gap-2 text-[10px] sm:text-sm font-medium tracking-wider cursor-pointer group"
           >
             <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-600 group-hover:scale-125 transition-transform"></span>
             <span className="uppercase text-gray-300 group-hover:text-white transition-colors">
