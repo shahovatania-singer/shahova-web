@@ -8,22 +8,26 @@ export default function Header() {
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
-    
+
+    const scrollToElement = () => {
+      const element = document.getElementById(id);
+      if (element) {
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.scrollY;
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
+      }
+    };
+
     if (isMobileMenuOpen) {
       setIsMobileMenuOpen(false);
       // Wait for the mobile menu exit animation (300ms) to finish before scrolling
       // This prevents the browser from aborting the smooth scroll due to layout shifts.
-      setTimeout(() => {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }, 300);
+      setTimeout(scrollToElement, 300);
     } else {
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      scrollToElement();
     }
   };
 
@@ -38,9 +42,9 @@ export default function Header() {
     <div className="fixed top-0 left-0 right-0 z-50 flex flex-col items-center bg-[#0d0d0d]/80 backdrop-blur-md border-b border-white/5">
       <header className="flex items-center justify-between px-6 sm:px-8 h-16 max-w-[1440px] w-full">
         {/* Logo */}
-        <a 
-          href="#hero" 
-          onClick={(e) => handleScroll(e, "hero")} 
+        <a
+          href="#hero"
+          onClick={(e) => handleScroll(e, "hero")}
           className="flex-shrink-0 cursor-pointer"
         >
           <img
@@ -66,9 +70,9 @@ export default function Header() {
 
         {/* Right side: Get in touch & Mobile Menu Toggle */}
         <div className="flex items-center space-x-5 sm:space-x-8">
-          <a 
-            href="#contact" 
-            onClick={(e) => handleScroll(e, "contact")} 
+          <a
+            href="#contact"
+            onClick={(e) => handleScroll(e, "contact")}
             className="hidden md:flex items-center space-x-2 text-[10px] sm:text-sm font-medium tracking-wider cursor-pointer group"
           >
             <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-600 group-hover:scale-125 transition-transform"></span>
@@ -85,7 +89,9 @@ export default function Header() {
           >
             <motion.span
               initial={false}
-              animate={isMobileMenuOpen ? { rotate: 45, y: 0 } : { rotate: 0, y: -6 }}
+              animate={
+                isMobileMenuOpen ? { rotate: 45, y: 0 } : { rotate: 0, y: -6 }
+              }
               className="absolute w-6 h-[2px] bg-gray-300"
             />
             <motion.span
@@ -95,7 +101,9 @@ export default function Header() {
             />
             <motion.span
               initial={false}
-              animate={isMobileMenuOpen ? { rotate: -45, y: 0 } : { rotate: 0, y: 6 }}
+              animate={
+                isMobileMenuOpen ? { rotate: -45, y: 0 } : { rotate: 0, y: 6 }
+              }
               className="absolute w-6 h-[2px] bg-gray-300"
             />
           </button>
@@ -123,10 +131,10 @@ export default function Header() {
                   {link.label}
                 </a>
               ))}
-              
-              <a 
-                href="#contact" 
-                onClick={(e) => handleScroll(e, "contact")} 
+
+              <a
+                href="#contact"
+                onClick={(e) => handleScroll(e, "contact")}
                 className="flex items-center space-x-3 text-lg font-semibold tracking-widest cursor-pointer group"
               >
                 <span className="w-2 h-2 rounded-full bg-red-600 group-hover:scale-125 transition-transform"></span>
