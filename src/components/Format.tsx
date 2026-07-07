@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const FORMATS = [
   {
@@ -10,6 +10,21 @@ const FORMATS = [
     subtitle: "One Voice",
     thumbnail: "/image/Solo.webp",
     mainImage: "/image/Solo.webp",
+    details: (
+      <>
+        <p className="text-red-600 uppercase tracking-widest text-sm font-semibold mb-2">Live Elegance</p>
+        <h3 className="text-4xl md:text-5xl font-black text-white mb-8 tracking-wider">SOLO</h3>
+        <p className="mb-4 text-gray-300 leading-relaxed text-lg">As a solo performer, I offer flexible live entertainment for events of various formats.</p>
+        <p className="mb-4 text-gray-300 leading-relaxed text-lg">I perform with high-quality backing tracks and can join an event as part of a concert program alongside other artists or deliver a complete solo show tailored to your audience and occasion.<br/><br/>Available as a guest vocalist with orchestras and live bands, as well as a studio vocalist for recording projects.</p>
+        <p className="mb-8 text-gray-300 leading-relaxed text-lg">Features internationally loved hits and my own original music, allowing me to create the perfect musical atmosphere for every event—whether it's elegant background music, a vibrant party, or a high-energy concert where guests dance, sing along, and enjoy every moment.</p>
+        
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">Repertoire:</h4>
+        <p className="mb-8 text-gray-300 leading-relaxed text-lg">Pop, Soul, Latin, Jazz, Funk, Disco, and Electronic Music, performed in English, Spanish, Ukrainian, and Russian.</p>
+
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">I perform at:</h4>
+        <p className="text-gray-300 leading-relaxed text-lg">corporate events, weddings, gala dinners, restaurants, hotels, festivals, holiday celebrations, private parties etc.</p>
+      </>
+    )
   },
   {
     id: "duo",
@@ -17,6 +32,19 @@ const FORMATS = [
     subtitle: "Vocals & Violin",
     thumbnail: "/image/Duo.webp",
     mainImage: "/image/Duo.webp",
+    details: (
+      <>
+        <p className="text-red-600 uppercase tracking-widest text-sm font-semibold mb-2">Duo Performance — Vocal + Violin</p>
+        <h3 className="text-4xl md:text-5xl font-black text-white mb-8 tracking-wider">DUO</h3>
+        <p className="mb-8 text-gray-300 leading-relaxed text-lg">Our duo combines live vocals with high-quality music arrangements and the beautiful sound of the violin, creating a stylish, elegant, and welcoming atmosphere for your guests.</p>
+        
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">Our repertoire includes:</h4>
+        <p className="mb-8 text-gray-300 leading-relaxed text-lg">Jazz, Soul, Pop, Lounge, Latino, and internationally loved classics, carefully selected to complement the atmosphere while making every event feel memorable and unique.</p>
+
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">This format is perfect for:</h4>
+        <p className="text-gray-300 leading-relaxed text-lg">wedding receptions and guest welcomes, cocktail hours, wine evenings, lounge cafés, fine dining restaurants, museums, art galleries, private celebrations, corporate events, hotel lounges, boutique venues, and other sophisticated occasions.</p>
+      </>
+    )
   },
   {
     id: "trio",
@@ -24,6 +52,19 @@ const FORMATS = [
     subtitle: "Vocals & Percussion",
     thumbnail: "/image/Trio.webp",
     mainImage: "/image/Trio.webp",
+    details: (
+      <>
+        <p className="text-red-600 uppercase tracking-widest text-sm font-semibold mb-2">Trio — Vocal, Piano, Violin & Percussion</p>
+        <h3 className="text-4xl md:text-5xl font-black text-white mb-8 tracking-wider">TRIO</h3>
+        <p className="mb-8 text-gray-300 leading-relaxed text-lg">Golden notes Trio is an elegant blend of live vocals, piano, violin, and percussion instruments (congas, cajón, and more), creating a refined and unforgettable musical experience.</p>
+        
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">The repertoire:</h4>
+        <p className="mb-8 text-gray-300 leading-relaxed text-lg">Bossa Nova, Jazz, Swing, Pop, Latin and Lounge favorites.</p>
+
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">Perfect for:</h4>
+        <p className="text-gray-300 leading-relaxed text-lg">restaurants, cafés, bars, and venues looking for sophisticated background music with a warm and elegant vibe.</p>
+      </>
+    )
   },
   {
     id: "full-band",
@@ -31,11 +72,40 @@ const FORMATS = [
     subtitle: "Grand Performance",
     thumbnail: "/image/Full BandF.webp",
     mainImage: "/image/Full BandF.webp",
+    details: (
+      <>
+        <p className="text-red-600 uppercase tracking-widest text-sm font-semibold mb-2">Experience</p>
+        <h3 className="text-4xl md:text-5xl font-black text-white mb-8 tracking-wider">FULL BAND</h3>
+        <p className="mb-4 text-gray-300 leading-relaxed text-lg">A powerful, high-energy live show featuring a full professional band, designed for complete concert programs and unforgettable live entertainment, delivering a rich, dynamic sound, strong stage presence, and an engaging performance that keeps audiences entertained from beginning to end.</p>
+        <p className="mb-8 text-gray-300 leading-relaxed text-lg">This format creates an exciting atmosphere where guests can dance, sing along, and fully enjoy the energy and vibe of live music.</p>
+        
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">Line-up:</h4>
+        <p className="mb-8 text-gray-300 leading-relaxed text-lg">Vocals • Piano • Guitar • Bass • Drums</p>
+
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">The repertoire:</h4>
+        <p className="mb-8 text-gray-300 leading-relaxed text-lg">combines internationally loved hits with original music, featuring Pop, Dance, Funk, Soul, Disco, Latino, Jazz, and modern chart favorites.</p>
+
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">Perfect for:</h4>
+        <p className="text-gray-300 leading-relaxed text-lg">large-scale events, weddings, festivals, corporate events, city celebrations, private parties, hotel entertainment, restaurants, clubs, and concert venues.</p>
+      </>
+    )
   },
 ];
 
 export default function Format() {
   const [stackOrder, setStackOrder] = useState(["solo", "duo", "trio", "full-band"]);
+  const [activePopup, setActivePopup] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (activePopup) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [activePopup]);
 
   const handleSelect = (id: string) => {
     setStackOrder((prev) => {
@@ -113,8 +183,7 @@ export default function Format() {
                       <button 
                         onClick={(e) => {
                           e.stopPropagation();
-                          // Navigation logic will go here
-                          console.log(`Navigate to more info for ${format.id}`);
+                          setActivePopup(format.id);
                         }}
                         className="text-xs md:text-lg font-medium tracking-widest text-white hover:text-red-600 transition-colors cursor-pointer flex-shrink-0"
                       >
@@ -162,6 +231,42 @@ export default function Format() {
           })}
         </div>
       </div>
+
+      {/* Modal Popup */}
+      <AnimatePresence>
+        {activePopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 flex items-center justify-center px-4 pb-4 pt-20 bg-black/60 backdrop-blur-2xl"
+            onClick={() => setActivePopup(null)}
+          >
+            <motion.div
+              initial={{ y: 50, opacity: 0, scale: 0.95 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              exit={{ y: 20, opacity: 0, scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="relative w-full max-w-2xl bg-[#0f0f0f] border border-white/10 p-8 md:p-12 shadow-[0_0_50px_rgba(0,0,0,0.8)] overflow-y-auto max-h-[90vh]"
+              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+            >
+              <button
+                onClick={() => setActivePopup(null)}
+                className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors p-2"
+                aria-label="Close"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+
+              <div className="mt-2 pr-4">
+                {FORMATS.find((f) => f.id === activePopup)?.details}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

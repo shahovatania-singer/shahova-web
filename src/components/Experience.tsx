@@ -27,7 +27,7 @@ export default function Experience() {
           {/* Third Layer */}
           <div className="absolute top-0 bottom-0 w-full translate-x-[32px] z-0 overflow-hidden border-l-[4px] border-[#0d0d0d]">
             <img
-              src="https://images.unsplash.com/photo-1601506521937-0121a7fc2a6b?q=80&w=2071&auto=format&fit=crop"
+              src="/image/Experience.webp"
               alt=""
               className="w-full h-full object-cover opacity-60 mix-blend-luminosity grayscale"
             />
@@ -36,7 +36,7 @@ export default function Experience() {
           {/* Second Layer */}
           <div className="absolute top-0 bottom-0 w-full translate-x-[16px] z-10 overflow-hidden border-l-[4px] border-[#0d0d0d]">
             <img
-              src="https://images.unsplash.com/photo-1601506521937-0121a7fc2a6b?q=80&w=2071&auto=format&fit=crop"
+              src="/image/Experience.webp"
               alt=""
               className="w-full h-full object-cover opacity-80 mix-blend-luminosity grayscale"
             />
@@ -45,7 +45,7 @@ export default function Experience() {
           {/* Main Image */}
           <div className="relative z-20 w-full aspect-[16/10] bg-zinc-900 overflow-hidden shadow-[0px_0px_50px_rgba(0,0,0,0.5)]">
             <img
-              src="https://images.unsplash.com/photo-1601506521937-0121a7fc2a6b?q=80&w=2071&auto=format&fit=crop"
+              src="/image/Experience.webp"
               alt="Cameraman in action"
               className="w-full h-full object-cover"
             />
