@@ -7,24 +7,28 @@ const FORMATS = [
   {
     id: "solo",
     title: "Solo",
+    subtitle: "One Voice",
     thumbnail: "/image/Solo.webp",
     mainImage: "/image/Solo.webp",
   },
   {
     id: "duo",
     title: "Duo",
+    subtitle: "Vocals & Violin",
     thumbnail: "/image/Duo.webp",
     mainImage: "/image/Duo.webp",
   },
   {
     id: "trio",
     title: "Trio",
+    subtitle: "Vocals & Percussion",
     thumbnail: "/image/Trio.webp",
     mainImage: "/image/Trio.webp",
   },
   {
     id: "full-band",
     title: "Full Band",
+    subtitle: "Grand Performance",
     thumbnail: "/image/Full BandF.webp",
     mainImage: "/image/Full BandF.webp",
   },
@@ -73,16 +77,16 @@ export default function Format() {
             return (
               <div
                 key={format.id}
-                onClick={() => handleSelect(format.id)}
-                className={`flex items-center gap-8 p-4 cursor-pointer transition-all duration-300 border ${
+                onClick={() => !isSelected && handleSelect(format.id)}
+                className={`flex items-center gap-4 md:gap-6 p-3 md:p-4 transition-all duration-300 border ${
                   isSelected
-                    ? "border-red-600 bg-red-600/5"
-                    : "border-transparent hover:border-white/10 hover:bg-white/5"
+                    ? "border-red-600 bg-red-600/5 cursor-default"
+                    : "border-transparent hover:border-white/10 hover:bg-white/5 cursor-pointer"
                 }`}
               >
                 {/* Thumbnail */}
                 <div
-                  className={`w-24 h-24 bg-zinc-800 overflow-hidden flex-shrink-0 transition-all duration-300 ${!isSelected ? "grayscale opacity-50" : ""}`}
+                  className={`w-16 h-16 md:w-24 md:h-24 bg-zinc-800 overflow-hidden flex-shrink-0 transition-all duration-300 ${!isSelected ? "grayscale opacity-50" : ""}`}
                 >
                   <img
                     src={format.thumbnail}
@@ -91,20 +95,32 @@ export default function Format() {
                   />
                 </div>
 
-                {/* Text */}
-                <div className="flex flex-col">
+                {/* Text Content */}
+                <div className="flex flex-col flex-1 justify-center min-w-0">
                   <span
-                    className={`text-2xl font-bold tracking-wider transition-colors ${
+                    className={`text-2xl md:text-4xl font-bold tracking-widest uppercase transition-colors truncate ${
                       isSelected ? "text-white" : "text-gray-400"
                     }`}
                   >
                     {format.title}
                   </span>
+                  
                   {isSelected && (
-                    <motion.div
-                      layoutId="activeIndicator"
-                      className="h-[2px] bg-white mt-3 w-12"
-                    />
+                    <div className="flex items-center justify-between mt-1 md:pr-4">
+                      <span className="text-sm md:text-xl text-gray-200 truncate mr-2">
+                        {format.subtitle}
+                      </span>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // Navigation logic will go here
+                          console.log(`Navigate to more info for ${format.id}`);
+                        }}
+                        className="text-xs md:text-lg font-medium tracking-widest text-white hover:text-red-600 transition-colors cursor-pointer flex-shrink-0"
+                      >
+                        MORE
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
