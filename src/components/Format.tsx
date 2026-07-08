@@ -12,19 +12,45 @@ const FORMATS = [
     mainImage: "/image/Solo.webp",
     details: (
       <>
-        <p className="text-red-600 uppercase tracking-widest text-sm font-semibold mb-2">Live Elegance</p>
-        <h3 className="text-4xl md:text-5xl font-black text-white mb-8 tracking-wider">SOLO</h3>
-        <p className="mb-4 text-gray-300 leading-relaxed text-lg">As a solo performer, I offer flexible live entertainment for events of various formats.</p>
-        <p className="mb-4 text-gray-300 leading-relaxed text-lg">I perform with high-quality backing tracks and can join an event as part of a concert program alongside other artists or deliver a complete solo show tailored to your audience and occasion.<br/><br/>Available as a guest vocalist with orchestras and live bands, as well as a studio vocalist for recording projects.</p>
-        <p className="mb-8 text-gray-300 leading-relaxed text-lg">Features internationally loved hits and my own original music, allowing me to create the perfect musical atmosphere for every event—whether it's elegant background music, a vibrant party, or a high-energy concert where guests dance, sing along, and enjoy every moment.</p>
-        
-        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">Repertoire:</h4>
-        <p className="mb-8 text-gray-300 leading-relaxed text-lg">Pop, Soul, Latin, Jazz, Funk, Disco, and Electronic Music, performed in English, Spanish, Ukrainian, and Russian.</p>
+        <p className="text-red-600 uppercase tracking-widest text-sm font-semibold mb-2">
+          Live Elegance
+        </p>
+        <h3 className="text-4xl md:text-5xl font-black text-white mb-8 leading-[0.85] tracking-tighter uppercase">
+          SOLO
+        </h3>
+        <p className="mb-4 text-gray-300 leading-relaxed text-lg">
+          As a solo performer, I provide live entertainment for a wide range of events and occasions.
+        </p>
+        <p className="mb-8 text-gray-300 leading-relaxed text-lg">
+          My repertoire includes Jazz, Soul, Pop, Latin, Disco and world-famous hits.
+          <br />
+          Performing live at restaurants, private events, weddings, corporate events, and special occasions.
+        </p>
 
-        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">I perform at:</h4>
-        <p className="text-gray-300 leading-relaxed text-lg">corporate events, weddings, gala dinners, restaurants, hotels, festivals, holiday celebrations, private parties etc.</p>
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">
+          Solo Show
+        </h4>
+        <p className="mb-6 text-gray-300 leading-relaxed text-lg">
+          A complete vocal performance tailored to your event, audience, and atmosphere.
+          I create a personalized program and perform with high-quality backing tracks.
+        </p>
+
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">
+          Guest Vocalist
+        </h4>
+        <p className="mb-6 text-gray-300 leading-relaxed text-lg">
+          Available as a guest vocalist for concert programs, orchestras, and live bands,
+          adding a professional vocal performance to larger musical projects.
+        </p>
+
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">
+          Studio Work
+        </h4>
+        <p className="text-gray-300 leading-relaxed text-lg">
+          I also work as a studio vocalist for recording projects, collaborations, and original music productions.
+        </p>
       </>
-    )
+    ),
   },
   {
     id: "duo",
@@ -34,17 +60,38 @@ const FORMATS = [
     mainImage: "/image/Duo.webp",
     details: (
       <>
-        <p className="text-red-600 uppercase tracking-widest text-sm font-semibold mb-2">Duo Performance — Vocal + Violin</p>
-        <h3 className="text-4xl md:text-5xl font-black text-white mb-8 tracking-wider">DUO</h3>
-        <p className="mb-8 text-gray-300 leading-relaxed text-lg">Our duo combines live vocals with high-quality music arrangements and the beautiful sound of the violin, creating a stylish, elegant, and welcoming atmosphere for your guests.</p>
-        
-        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">Our repertoire includes:</h4>
-        <p className="mb-8 text-gray-300 leading-relaxed text-lg">Jazz, Soul, Pop, Lounge, Latino, and internationally loved classics, carefully selected to complement the atmosphere while making every event feel memorable and unique.</p>
+        <p className="text-red-600 uppercase tracking-widest text-sm font-semibold mb-2">
+          Duo Performance — Vocal + Violin
+        </p>
+        <h3 className="text-4xl md:text-5xl font-black text-white mb-8 leading-[0.85] tracking-tighter uppercase">
+          DUO
+        </h3>
+        <p className="mb-8 text-gray-300 leading-relaxed text-lg">
+          Our duo combines live vocals with high-quality music arrangements and
+          the beautiful sound of the violin, creating a stylish, elegant, and
+          welcoming atmosphere for your guests.
+        </p>
 
-        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">This format is perfect for:</h4>
-        <p className="text-gray-300 leading-relaxed text-lg">wedding receptions and guest welcomes, cocktail hours, wine evenings, lounge cafés, fine dining restaurants, museums, art galleries, private celebrations, corporate events, hotel lounges, boutique venues, and other sophisticated occasions.</p>
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">
+          Our repertoire includes:
+        </h4>
+        <p className="mb-8 text-gray-300 leading-relaxed text-lg">
+          Jazz, Soul, Pop, Lounge, Latino, and internationally loved classics,
+          carefully selected to complement the atmosphere while making every
+          event feel memorable and unique.
+        </p>
+
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">
+          This format is perfect for:
+        </h4>
+        <p className="text-gray-300 leading-relaxed text-lg">
+          wedding receptions and guest welcomes, cocktail hours, wine evenings,
+          lounge cafés, fine dining restaurants, museums, art galleries, private
+          celebrations, corporate events, hotel lounges, boutique venues, and
+          other sophisticated occasions.
+        </p>
       </>
-    )
+    ),
   },
   {
     id: "trio",
@@ -54,17 +101,34 @@ const FORMATS = [
     mainImage: "/image/Trio.webp",
     details: (
       <>
-        <p className="text-red-600 uppercase tracking-widest text-sm font-semibold mb-2">Trio — Vocal, Piano, Violin & Percussion</p>
-        <h3 className="text-4xl md:text-5xl font-black text-white mb-8 tracking-wider">TRIO</h3>
-        <p className="mb-8 text-gray-300 leading-relaxed text-lg">Golden notes Trio is an elegant blend of live vocals, piano, violin, and percussion instruments (congas, cajón, and more), creating a refined and unforgettable musical experience.</p>
-        
-        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">The repertoire:</h4>
-        <p className="mb-8 text-gray-300 leading-relaxed text-lg">Bossa Nova, Jazz, Swing, Pop, Latin and Lounge favorites.</p>
+        <p className="text-red-600 uppercase tracking-widest text-sm font-semibold mb-2">
+          Trio — Vocal, Piano, Violin & Percussion
+        </p>
+        <h3 className="text-4xl md:text-5xl font-black text-white mb-8 leading-[0.85] tracking-tighter uppercase">
+          TRIO
+        </h3>
+        <p className="mb-8 text-gray-300 leading-relaxed text-lg">
+          Golden notes Trio is an elegant blend of live vocals, piano, violin,
+          and percussion instruments (congas, cajón, and more), creating a
+          refined and unforgettable musical experience.
+        </p>
 
-        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">Perfect for:</h4>
-        <p className="text-gray-300 leading-relaxed text-lg">restaurants, cafés, bars, and venues looking for sophisticated background music with a warm and elegant vibe.</p>
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">
+          The repertoire:
+        </h4>
+        <p className="mb-8 text-gray-300 leading-relaxed text-lg">
+          Bossa Nova, Jazz, Swing, Pop, Latin and Lounge favorites.
+        </p>
+
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">
+          Perfect for:
+        </h4>
+        <p className="text-gray-300 leading-relaxed text-lg">
+          restaurants, cafés, bars, and venues looking for sophisticated
+          background music with a warm and elegant vibe.
+        </p>
       </>
-    )
+    ),
   },
   {
     id: "full-band",
@@ -74,26 +138,60 @@ const FORMATS = [
     mainImage: "/image/Full BandF.webp",
     details: (
       <>
-        <p className="text-red-600 uppercase tracking-widest text-sm font-semibold mb-2">Experience</p>
-        <h3 className="text-4xl md:text-5xl font-black text-white mb-8 tracking-wider">FULL BAND</h3>
-        <p className="mb-4 text-gray-300 leading-relaxed text-lg">A powerful, high-energy live show featuring a full professional band, designed for complete concert programs and unforgettable live entertainment, delivering a rich, dynamic sound, strong stage presence, and an engaging performance that keeps audiences entertained from beginning to end.</p>
-        <p className="mb-8 text-gray-300 leading-relaxed text-lg">This format creates an exciting atmosphere where guests can dance, sing along, and fully enjoy the energy and vibe of live music.</p>
-        
-        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">Line-up:</h4>
-        <p className="mb-8 text-gray-300 leading-relaxed text-lg">Vocals • Piano • Guitar • Bass • Drums</p>
+        <p className="text-red-600 uppercase tracking-widest text-sm font-semibold mb-2">
+          Experience
+        </p>
+        <h3 className="text-4xl md:text-5xl font-black text-white mb-8 leading-[0.85] tracking-tighter uppercase">
+          FULL BAND
+        </h3>
+        <p className="mb-4 text-gray-300 leading-relaxed text-lg">
+          A powerful, high-energy live show featuring a full professional band,
+          designed for complete concert programs and unforgettable live
+          entertainment, delivering a rich, dynamic sound, strong stage
+          presence, and an engaging performance that keeps audiences entertained
+          from beginning to end.
+        </p>
+        <p className="mb-8 text-gray-300 leading-relaxed text-lg">
+          This format creates an exciting atmosphere where guests can dance,
+          sing along, and fully enjoy the energy and vibe of live music.
+        </p>
 
-        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">The repertoire:</h4>
-        <p className="mb-8 text-gray-300 leading-relaxed text-lg">combines internationally loved hits with original music, featuring Pop, Dance, Funk, Soul, Disco, Latino, Jazz, and modern chart favorites.</p>
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">
+          Line-up:
+        </h4>
+        <p className="mb-8 text-gray-300 leading-relaxed text-lg">
+          Vocals • Piano • Guitar • Bass • Drums
+        </p>
 
-        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">Perfect for:</h4>
-        <p className="text-gray-300 leading-relaxed text-lg">large-scale events, weddings, festivals, corporate events, city celebrations, private parties, hotel entertainment, restaurants, clubs, and concert venues.</p>
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">
+          The repertoire:
+        </h4>
+        <p className="mb-8 text-gray-300 leading-relaxed text-lg">
+          combines internationally loved hits with original music, featuring
+          Pop, Dance, Funk, Soul, Disco, Latino, Jazz, and modern chart
+          favorites.
+        </p>
+
+        <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">
+          Perfect for:
+        </h4>
+        <p className="text-gray-300 leading-relaxed text-lg">
+          large-scale events, weddings, festivals, corporate events, city
+          celebrations, private parties, hotel entertainment, restaurants,
+          clubs, and concert venues.
+        </p>
       </>
-    )
+    ),
   },
 ];
 
 export default function Format() {
-  const [stackOrder, setStackOrder] = useState(["solo", "duo", "trio", "full-band"]);
+  const [stackOrder, setStackOrder] = useState([
+    "solo",
+    "duo",
+    "trio",
+    "full-band",
+  ]);
   const [activePopup, setActivePopup] = useState<string | null>(null);
 
   useEffect(() => {
@@ -168,24 +266,25 @@ export default function Format() {
                 {/* Text Content */}
                 <div className="flex flex-col flex-1 justify-center min-w-0">
                   <span
-                    className={`text-2xl md:text-4xl font-bold tracking-widest uppercase transition-colors truncate ${
+                    className={`text-2xl md:text-4xl font-black leading-[0.85] tracking-tighter uppercase transition-colors truncate ${
                       isSelected ? "text-white" : "text-gray-400"
                     }`}
                   >
                     {format.title}
                   </span>
-                  
+
                   {isSelected && (
-                    <div className="flex items-center justify-between mt-1 md:pr-4">
-                      <span className="text-sm md:text-xl text-gray-200 truncate mr-2">
+                    <div className="flex items-center justify-between mt-2 md:mt-3 md:pr-4">
+                      <span className="text-xs font-semibold tracking-[0.15em] text-gray-300 uppercase">
                         {format.subtitle}
                       </span>
-                      <button 
+                      <button
                         onClick={(e) => {
                           e.stopPropagation();
                           setActivePopup(format.id);
                         }}
-                        className="text-xs md:text-lg font-medium tracking-widest text-white hover:text-red-600 transition-colors cursor-pointer flex-shrink-0"
+                        // className="text-xs md:text-lg font-medium tracking-widest text-white hover:text-red-600 transition-colors cursor-pointer flex-shrink-0"
+                        className="text-xs font-semibold tracking-[0.15em] text-gray-300 uppercase hover:text-red-600 transition-colors cursor-pointer flex-shrink-0"
                       >
                         MORE
                       </button>
@@ -255,8 +354,19 @@ export default function Format() {
                 className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors p-2"
                 aria-label="Close"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-8 w-8"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
 
