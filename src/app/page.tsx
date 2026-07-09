@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import About from "@/components/About";
 import Music from "@/components/Music";
 import Live from "@/components/Live";
 import Experience from "@/components/Experience";
@@ -18,6 +19,9 @@ export default function Home() {
 
       {/* Hero Section */}
       <Hero />
+
+      {/* About Section */}
+      <About />
 
       {/* Music Section */}
       <Music />

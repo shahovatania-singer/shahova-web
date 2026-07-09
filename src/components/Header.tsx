@@ -32,6 +32,7 @@ export default function Header() {
   };
 
   const navLinks = [
+    { id: "about", label: "ABOUT" },
     { id: "music", label: "MUSIC" },
     { id: "live", label: "LIVE" },
     { id: "experience", label: "EXPERIENCE" },
