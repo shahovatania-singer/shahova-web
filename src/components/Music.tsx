@@ -166,7 +166,7 @@ export default function Music() {
       {/* Carousel & Player Area */}
       <div className="relative w-full flex flex-col items-center justify-center">
         {/* 3D Carousel */}
-        <div className="relative w-full max-w-5xl h-[450px] md:h-[600px] lg:h-[650px] flex items-center justify-center">
+        <div className="relative w-full max-w-5xl h-[450px] sm:h-[500px] md:h-[600px] lg:h-[650px] flex items-center justify-center">
           {SONGS.map((song, index) => {
             let offset = index - activeIndex;
             if (offset < -Math.floor(SONGS.length / 2)) offset += SONGS.length;
@@ -189,7 +189,7 @@ export default function Music() {
                     : "grayscale(80%) brightness(0.6)",
                 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="absolute w-[80%] md:w-[450px] flex flex-col items-center pointer-events-none"
+                className="absolute w-[70vw] max-w-[280px] sm:max-w-[320px] md:max-w-[400px] lg:max-w-[450px] flex flex-col items-center pointer-events-none"
               >
                 {/* Card Image */}
                 <div className="w-full aspect-[3/4] bg-[#0a0a0a] overflow-hidden relative shadow-[0_0_40px_rgba(0,0,0,0.8)]">
@@ -225,7 +225,7 @@ export default function Music() {
         </div>
 
         {/* Player UI */}
-        <div className="mt-0 md:-mt-2 flex flex-col items-center w-full z-30 relative">
+        <div className="-mt-6 md:-mt-2 flex flex-col items-center w-full z-30 relative">
           <div className="text-[10px] text-gray-500 tracking-[0.2em] uppercase mb-2">
             {currentSong.artist}
           </div>
@@ -234,7 +234,7 @@ export default function Music() {
           </div>
 
           {/* Progress */}
-          <div className="flex items-center gap-4 w-full max-w-md text-xs text-gray-500 font-medium mb-8 px-4">
+          <div className="flex items-center gap-4 w-full max-w-md text-xs text-gray-500 font-medium mb-3 md:mb-4 px-4">
             <span className="w-8 text-right text-gray-300">
               {formatTime(progress)}
             </span>
@@ -260,7 +260,7 @@ export default function Music() {
           </div>
 
           {/* Bottom Area: Controls & Links */}
-          <div className="relative w-full flex flex-col md:flex-row items-center justify-center mt-4 md:mt-0 px-4 md:px-0 min-h-[100px]">
+          <div className="relative w-full flex flex-col md:flex-row items-center justify-center mt-2 md:mt-0 px-4 md:px-0 min-h-[100px]">
             {/* Controls Block */}
             <div className="flex items-center justify-center gap-12 mb-12 md:mb-0">
               {/* Prev */}
