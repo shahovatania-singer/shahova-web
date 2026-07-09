@@ -30,28 +30,9 @@ export default function About() {
 
       {/* Content Columns */}
       <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 lg:items-stretch items-center w-full">
-        {/* Left Column - Image Stack */}
+        {/* Left Column - Image */}
         <div className="relative w-full sm:w-[80%] md:w-[60%] lg:w-[40%] flex-shrink-0 flex flex-col">
-          {/* Third Layer */}
-          <div className="absolute top-0 bottom-0 w-full translate-x-[32px] z-0 overflow-hidden border-l-[4px] border-[#0d0d0d]">
-            <img
-              src="/image/About.webp"
-              alt=""
-              className="w-full h-full object-cover opacity-60 mix-blend-luminosity grayscale"
-            />
-          </div>
-
-          {/* Second Layer */}
-          <div className="absolute top-0 bottom-0 w-full translate-x-[16px] z-10 overflow-hidden border-l-[4px] border-[#0d0d0d]">
-            <img
-              src="/image/About.webp"
-              alt=""
-              className="w-full h-full object-cover opacity-80 mix-blend-luminosity grayscale"
-            />
-          </div>
-
-          {/* Main Image */}
-          <div className="relative z-20 w-full aspect-[4/5] bg-zinc-900 overflow-hidden shadow-[0px_0px_50px_rgba(0,0,0,0.5)]">
+          <div className="relative w-full aspect-[4/5] flex-grow bg-zinc-900 overflow-hidden shadow-[0px_0px_50px_rgba(0,0,0,0.5)]">
             <img
               src="/image/About.webp"
               alt="About the artist"
