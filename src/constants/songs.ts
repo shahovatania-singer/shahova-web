@@ -1,0 +1,51 @@
+export const SONGS = [
+  {
+    id: 1,
+    title: "Summer",
+    artist: "Featured Track",
+    image: "/image/Summer clip.webp",
+    src: "/sound/Summer.MP3",
+  },
+  {
+    id: 2,
+    title: "Parlo Miro",
+    artist: "Featured Track",
+    image: "/image/Parlo miro clip.webp",
+    src: "/sound/Parlo Miro.MP3",
+  },
+  {
+    id: 3,
+    title: "Hypnotize",
+    artist: "Featured Track",
+    image: "/image/Hypnotize clip.webp",
+    src: "/sound/Hypnotize.MP3",
+  },
+  {
+    id: 4,
+    title: "Moonlight",
+    artist: "Featured Track",
+    image: "/image/Moonlight.webp",
+    src: "/sound/Moonlight.MP3",
+  },
+  {
+    id: 5,
+    title: "Sway",
+    artist: "Featured Track",
+    image: "/image/Sway.webp",
+    src: "/sound/Sway.MP3",
+  },
+  {
+    id: 6,
+    title: "Let It Snow",
+    artist: "Featured Track",
+    image: "/image/Let It Snow.webp",
+    src: "/sound/Let It Snow.MP3",
+  },
+  {
+    id: 7,
+    title: "Tainted Love",
+    artist: "Featured Track",
+    image: "/image/Tainted Love clip.webp",
+    src: "/sound/Tainted Love.MP3",
+  },
+];

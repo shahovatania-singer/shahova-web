@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import CustomVideoPlayer from "./CustomVideoPlayer";
+import { useAudioPlayer } from "@/context/AudioPlayerContext";
 
 interface VideoModalProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ interface VideoModalProps {
 
 export default function VideoModal({ isOpen, onClose, videoUrl, title, image }: VideoModalProps) {
   const [mounted, setMounted] = useState(false);
+  const { pauseMusic, isPlaying } = useAudioPlayer();
 
   useEffect(() => {
     setMounted(true);
@@ -26,6 +28,9 @@ export default function VideoModal({ isOpen, onClose, videoUrl, title, image }: 
     };
 
     if (isOpen) {
+      if (isPlaying) {
+        pauseMusic();
+      }
       document.body.style.overflow = "hidden";
       window.addEventListener("keydown", handleKeyDown);
     } else {
@@ -36,7 +41,7 @@ export default function VideoModal({ isOpen, onClose, videoUrl, title, image }: 
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, isPlaying, pauseMusic]);
 
   if (!mounted) return null;
 

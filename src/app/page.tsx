@@ -7,6 +7,7 @@ import Experience from "@/components/Experience";
 import Format from "@/components/Format";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import StickyPlayer from "@/components/StickyPlayer";
 
 export default function Home() {
   return (
@@ -40,6 +41,9 @@ export default function Home() {
 
       {/* Footer */}
       <Footer />
+
+      {/* Sticky Player */}
+      <StickyPlayer />
     </main>
   );
 }
