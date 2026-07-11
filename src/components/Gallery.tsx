@@ -35,7 +35,8 @@ const images = imageData.map((img) => ({
 type LayoutType = "normal" | "landscape" | "portrait" | "huge";
 
 const getBoxClass = (type: LayoutType) => {
-  const base = "relative flex items-center justify-center overflow-hidden cursor-pointer group";
+  const base =
+    "relative flex items-center justify-center overflow-hidden cursor-pointer group";
   switch (type) {
     case "huge":
       return `${base} col-span-2 row-span-1 md:col-span-4 md:row-span-2 aspect-[2/1]`;
@@ -51,7 +52,9 @@ const getBoxClass = (type: LayoutType) => {
 export default function Gallery() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const currentIndex = selectedImage ? images.findIndex((img) => img.src === selectedImage) : -1;
+  const currentIndex = selectedImage
+    ? images.findIndex((img) => img.src === selectedImage)
+    : -1;
 
   const handlePrev = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
@@ -153,7 +156,7 @@ export default function Gallery() {
             {/* Close Button */}
             <button
               onClick={() => setSelectedImage(null)}
-              className="absolute top-20 right-6 md:top-24 md:right-8 z-50 p-2 text-gray-400 hover:text-white bg-black/50 hover:bg-black/80 rounded-full transition-all"
+              className="absolute top-20 right-6 md:top-24 md:right-8 z-50 p-2 text-gray-400 hover:text-white bg-black/20 hover:bg-black/30 rounded-full transition-all"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -175,7 +178,7 @@ export default function Gallery() {
             {currentIndex > 0 && (
               <button
                 onClick={handlePrev}
-                className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-50 p-2 text-gray-400 hover:text-white bg-black/50 hover:bg-black/80 rounded-full transition-all"
+                className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-50 p-2 text-gray-400 hover:text-white bg-black/20 hover:bg-black/30 rounded-full transition-all"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -184,7 +187,12 @@ export default function Gallery() {
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M15 19l-7-7 7-7"
+                  />
                 </svg>
               </button>
             )}
@@ -193,7 +201,7 @@ export default function Gallery() {
             {currentIndex !== -1 && currentIndex < images.length - 1 && (
               <button
                 onClick={handleNext}
-                className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-50 p-2 text-gray-400 hover:text-white bg-black/50 hover:bg-black/80 rounded-full transition-all"
+                className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-50 p-2 text-gray-400 hover:text-white bg-black/20 hover:bg-black/30 rounded-full transition-all"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -202,7 +210,12 @@ export default function Gallery() {
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M9 5l7 7-7 7"
+                  />
                 </svg>
               </button>
             )}

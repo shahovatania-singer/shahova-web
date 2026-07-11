@@ -123,58 +123,59 @@ export default function About() {
       </div>
 
       {/* Award Modal Popup */}
-      {mounted && createPortal(
-        <AnimatePresence>
-          {showAward && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="fixed inset-0 z-[40] flex items-center justify-center px-4 pt-16 bg-black/80 backdrop-blur-2xl"
-              onClick={() => setShowAward(false)}
-            >
-              {/* Close Button */}
-              <button
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {showAward && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="fixed inset-0 z-[40] flex items-center justify-center px-4 pt-16 bg-black/80 backdrop-blur-2xl"
                 onClick={() => setShowAward(false)}
-                className="absolute top-20 right-6 md:top-24 md:right-8 z-50 p-2 text-gray-400 hover:text-white bg-black/50 hover:bg-black/80 rounded-full transition-all"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+                {/* Close Button */}
+                <button
+                  onClick={() => setShowAward(false)}
+                  className="absolute top-20 right-6 md:top-24 md:right-8 z-50 p-2 text-gray-400 hover:text-white bg-black/20 hover:bg-black/30 rounded-full transition-all"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-8 w-8"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
 
-              {/* Image Container */}
-              <AnimatePresence mode="wait">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <motion.img
-                  key="award-image"
-                  initial={{ scale: 0.95, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.95, opacity: 0 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  src="/image/Award.webp"
-                  alt="London Songwriting Competition Award"
-                  className="max-w-[90vw] max-h-[calc(100vh-7rem)] w-auto h-auto object-contain shadow-2xl"
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </AnimatePresence>
-            </motion.div>
-          )}
-        </AnimatePresence>,
-        document.body
-      )}
+                {/* Image Container */}
+                <AnimatePresence mode="wait">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <motion.img
+                    key="award-image"
+                    initial={{ scale: 0.95, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.95, opacity: 0 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    src="/image/Award.webp"
+                    alt="London Songwriting Competition Award"
+                    className="max-w-[90vw] max-h-[calc(100vh-7rem)] w-auto h-auto object-contain shadow-2xl"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body,
+        )}
     </section>
   );
 }
