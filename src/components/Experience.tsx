@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 export default function Experience() {
   return (
@@ -29,28 +30,34 @@ export default function Experience() {
         <div className="relative w-full md:w-[80%] lg:w-[55%] flex-shrink-0 flex flex-col">
           {/* Third Layer */}
           <div className="absolute top-0 bottom-0 w-full translate-x-[32px] z-0 overflow-hidden border-l-[4px] border-[#0d0d0d]">
-            <img
+            <Image
               src="/image/Experience.webp"
               alt=""
-              className="w-full h-full object-cover opacity-60 mix-blend-luminosity grayscale"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 55vw"
+              className="object-cover opacity-60 mix-blend-luminosity grayscale"
             />
           </div>
 
           {/* Second Layer */}
           <div className="absolute top-0 bottom-0 w-full translate-x-[16px] z-10 overflow-hidden border-l-[4px] border-[#0d0d0d]">
-            <img
+            <Image
               src="/image/Experience.webp"
               alt=""
-              className="w-full h-full object-cover opacity-80 mix-blend-luminosity grayscale"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 55vw"
+              className="object-cover opacity-80 mix-blend-luminosity grayscale"
             />
           </div>
 
           {/* Main Image */}
           <div className="relative z-20 w-full aspect-[16/10] lg:aspect-auto lg:h-full min-h-[300px] bg-zinc-900 overflow-hidden shadow-[0px_0px_50px_rgba(0,0,0,0.5)]">
-            <img
+            <Image
               src="/image/Experience.webp"
               alt="Cameraman in action"
-              className="w-full h-full object-cover"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 55vw"
+              className="object-cover"
             />
           </div>
         </div>

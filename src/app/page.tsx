@@ -4,6 +4,7 @@ import About from "@/components/About";
 import Music from "@/components/Music";
 import Live from "@/components/Live";
 import Experience from "@/components/Experience";
+import Gallery from "@/components/Gallery";
 import Format from "@/components/Format";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -32,6 +33,9 @@ export default function Home() {
 
       {/* Experience Section */}
       <Experience />
+
+      {/* Gallery Section */}
+      <Gallery />
 
       {/* Format Section */}
       <Format />

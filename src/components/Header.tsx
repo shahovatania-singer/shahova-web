@@ -36,6 +36,7 @@ export default function Header() {
     { id: "music", label: "MUSIC" },
     { id: "live", label: "LIVE" },
     { id: "experience", label: "EXPERIENCE" },
+    { id: "gallery", label: "GALLERY" },
     { id: "format", label: "FORMAT" },
   ];
 

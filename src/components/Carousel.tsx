@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import VideoModal from "./VideoModal";
 
 const items = [
@@ -270,12 +271,14 @@ export default function Carousel() {
                   className="group relative h-[360px] w-[190px] md:h-[470px] md:w-[248px] flex-shrink-0 transition-transform duration-700 origin-center hover:scale-110 cursor-pointer overflow-hidden"
                   onClick={(e) => handleCardClick(e, item)}
                 >
-                  <img
+                  <Image
                     src={item.image}
                     alt={item.title}
-                    loading="lazy"
+                    fill
+                    sizes="(max-width: 768px) 190px, 248px"
+                    priority={setIndex === 0 && i < 4}
                     draggable={false}
-                    className="h-full w-full object-cover pointer-events-none"
+                    className="object-cover pointer-events-none"
                   />
 
                   {/* Overlay on hover */}

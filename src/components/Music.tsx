@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { SONGS } from "@/constants/songs";
 import { useAudioPlayer } from "@/context/AudioPlayerContext";
@@ -98,10 +99,12 @@ export default function Music() {
               >
                 {/* Card Image */}
                 <div className="w-full aspect-[3/4] bg-[#0a0a0a] overflow-hidden relative shadow-[0_0_40px_rgba(0,0,0,0.8)]">
-                  <img
+                  <Image
                     src={song.image}
                     alt={song.title}
-                    className={`w-full h-full object-cover transition-all duration-700 ${isCenter ? "opacity-100" : "opacity-60"}`}
+                    fill
+                    sizes="(max-width: 640px) 280px, (max-width: 768px) 320px, (max-width: 1024px) 400px, 450px"
+                    className={`object-cover transition-all duration-700 ${isCenter ? "opacity-100" : "opacity-60"}`}
                   />
 
                   {/* Red border & dot for inactive cards */}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 const FORMATS = [
@@ -19,35 +20,41 @@ const FORMATS = [
           SOLO
         </h3>
         <p className="mb-4 text-gray-300 leading-relaxed text-lg">
-          As a solo performer, I provide live entertainment for a wide range of events and occasions.
+          As a solo performer, I provide live entertainment for a wide range of
+          events and occasions.
         </p>
         <p className="mb-8 text-gray-300 leading-relaxed text-lg">
-          My repertoire includes Jazz, Soul, Pop, Latin, Disco and world-famous hits.
+          My repertoire includes Jazz, Soul, Pop, Latin, Disco and world-famous
+          hits.
           <br />
-          Performing live at restaurants, private events, weddings, corporate events, and special occasions.
+          Performing live at restaurants, private events, weddings, corporate
+          events, and special occasions.
         </p>
 
         <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">
           Solo Show
         </h4>
         <p className="mb-6 text-gray-300 leading-relaxed text-lg">
-          A complete vocal performance tailored to your event, audience, and atmosphere.
-          I create a personalized program and perform with high-quality backing tracks.
+          A complete vocal performance tailored to your event, audience, and
+          atmosphere. I create a personalized program and perform with
+          high-quality backing tracks.
         </p>
 
         <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">
           Guest Vocalist
         </h4>
         <p className="mb-6 text-gray-300 leading-relaxed text-lg">
-          Available as a guest vocalist for concert programs, orchestras, and live bands,
-          adding a professional vocal performance to larger musical projects.
+          Available as a guest vocalist for concert programs, orchestras, and
+          live bands, adding a professional vocal performance to larger musical
+          projects.
         </p>
 
         <h4 className="text-white font-bold text-xl mb-3 uppercase tracking-wide">
           Studio Work
         </h4>
         <p className="text-gray-300 leading-relaxed text-lg">
-          I also work as a studio vocalist for recording projects, collaborations, and original music productions.
+          I also work as a studio vocalist for recording projects,
+          collaborations, and original music productions.
         </p>
       </>
     ),
@@ -246,7 +253,7 @@ export default function Format() {
               <div
                 key={format.id}
                 onClick={() => !isSelected && handleSelect(format.id)}
-                className={`flex items-center gap-4 md:gap-6 p-3 md:p-4 transition-all duration-300 border ${
+                className={`flex items-center gap-4 md:gap-6 p-3 md:p-4 transition-all duration-300 border-2 ${
                   isSelected
                     ? "border-red-600 bg-red-600/5 cursor-default"
                     : "border-transparent hover:border-white/10 hover:bg-white/5 cursor-pointer"
@@ -254,12 +261,14 @@ export default function Format() {
               >
                 {/* Thumbnail */}
                 <div
-                  className={`w-16 h-16 md:w-24 md:h-24 bg-zinc-800 overflow-hidden flex-shrink-0 transition-all duration-300 ${!isSelected ? "grayscale opacity-50" : ""}`}
+                  className={`relative w-16 h-16 md:w-24 md:h-24 bg-zinc-800 overflow-hidden flex-shrink-0 transition-all duration-300 ${!isSelected ? "grayscale opacity-50" : ""}`}
                 >
-                  <img
+                  <Image
                     src={format.thumbnail}
                     alt={format.title}
-                    className="w-full h-full object-cover"
+                    fill
+                    sizes="(max-width: 768px) 64px, 96px"
+                    className="object-cover"
                   />
                 </div>
 
@@ -320,10 +329,12 @@ export default function Format() {
                 }`}
                 style={{ right: "48px" }} // Make room for the shifted back elements
               >
-                <img
+                <Image
                   src={format.mainImage}
                   alt={format.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 55vw"
+                  className="object-cover"
                 />
               </motion.div>
             );

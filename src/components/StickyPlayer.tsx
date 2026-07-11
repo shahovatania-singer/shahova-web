@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAudioPlayer } from "@/context/AudioPlayerContext";
 
@@ -72,9 +73,11 @@ export default function StickyPlayer() {
           </button>
           {/* Thumbnail */}
           <div className="w-14 h-14 md:w-16 md:h-16 flex-shrink-0 bg-[#0a0a0a] overflow-hidden shadow-inner">
-            <img
+            <Image
               src={currentSong.image}
               alt={currentSong.title}
+              width={64}
+              height={64}
               className="w-full h-full object-cover"
             />
           </div>

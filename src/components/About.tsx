@@ -1,10 +1,37 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function About() {
   const [showAward, setShowAward] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setShowAward(false);
+      }
+    };
+
+    if (showAward) {
+      document.body.style.overflow = "hidden";
+      window.addEventListener("keydown", handleKeyDown);
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showAward]);
 
   return (
     <section
@@ -33,10 +60,12 @@ export default function About() {
         {/* Left Column - Image */}
         <div className="relative w-full sm:w-[80%] md:w-[60%] lg:w-[40%] flex-shrink-0 flex flex-col">
           <div className="relative w-full aspect-[4/5] flex-grow bg-zinc-900 overflow-hidden shadow-[0px_0px_50px_rgba(0,0,0,0.5)]">
-            <img
+            <Image
               src="/image/About.webp"
               alt="About the artist"
-              className="w-full h-full object-cover"
+              fill
+              sizes="(max-width: 768px) 80vw, (max-width: 1024px) 60vw, 40vw"
+              className="object-cover"
             />
           </div>
         </div>
@@ -93,28 +122,22 @@ export default function About() {
         </div>
       </div>
 
-      {/* Award Modal */}
-      <AnimatePresence>
-        {showAward && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex items-center justify-center px-4 pb-4 pt-20 bg-black/60 backdrop-blur-2xl"
-            onClick={() => setShowAward(false)}
-          >
+      {/* Award Modal Popup */}
+      {mounted && createPortal(
+        <AnimatePresence>
+          {showAward && (
             <motion.div
-              initial={{ y: 50, opacity: 0, scale: 0.95 }}
-              animate={{ y: 0, opacity: 1, scale: 1 }}
-              exit={{ y: 20, opacity: 0, scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="relative w-full max-w-2xl bg-[#0f0f0f] border border-white/10 p-8 md:p-12 shadow-[0_0_50px_rgba(0,0,0,0.8)] overflow-y-auto max-h-[90vh]"
-              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 z-[40] flex items-center justify-center px-4 pt-16 bg-black/80 backdrop-blur-2xl"
+              onClick={() => setShowAward(false)}
             >
+              {/* Close Button */}
               <button
                 onClick={() => setShowAward(false)}
-                className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors p-2"
-                aria-label="Close"
+                className="absolute top-20 right-6 md:top-24 md:right-8 z-50 p-2 text-gray-400 hover:text-white bg-black/50 hover:bg-black/80 rounded-full transition-all"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -132,17 +155,26 @@ export default function About() {
                 </svg>
               </button>
 
-              <div className="mt-4">
-                <img
+              {/* Image Container */}
+              <AnimatePresence mode="wait">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <motion.img
+                  key="award-image"
+                  initial={{ scale: 0.95, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.95, opacity: 0 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   src="/image/Award.webp"
                   alt="London Songwriting Competition Award"
-                  className="w-full h-auto object-contain"
+                  className="max-w-[90vw] max-h-[calc(100vh-7rem)] w-auto h-auto object-contain shadow-2xl"
+                  onClick={(e) => e.stopPropagation()}
                 />
-              </div>
+              </AnimatePresence>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </section>
   );
 }

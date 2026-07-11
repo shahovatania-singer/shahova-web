@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import VideoModal from "./VideoModal";
 
 const PERFORMANCES = [
@@ -104,10 +105,12 @@ export default function Live() {
             }}
           >
             {/* Image */}
-            <img
+            <Image
               src={perf.image}
               alt={perf.title}
-              className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
+              className="object-cover opacity-60 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
             />
 
             {/* Red Border Overlay */}
