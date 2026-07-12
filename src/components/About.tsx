@@ -132,13 +132,13 @@ export default function About() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="fixed inset-0 z-[40] flex items-center justify-center px-4 pt-16 bg-black/80 backdrop-blur-2xl"
+                className="fixed inset-0 z-[60] flex items-center justify-center px-4 bg-black/80 backdrop-blur-2xl"
                 onClick={() => setShowAward(false)}
               >
                 {/* Close Button */}
                 <button
                   onClick={() => setShowAward(false)}
-                  className="absolute top-20 right-6 md:top-24 md:right-8 z-50 p-2 text-gray-400 hover:text-white bg-black/20 hover:bg-black/30 rounded-full transition-all"
+                  className="absolute top-6 right-6 md:top-8 md:right-8 z-50 p-2 text-gray-400 hover:text-white bg-black/20 hover:bg-black/30 rounded-full transition-all"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

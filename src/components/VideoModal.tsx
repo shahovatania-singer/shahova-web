@@ -61,7 +61,7 @@ export default function VideoModal({ isOpen, onClose, videoUrl, title, image }: 
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
-            className="relative w-fit h-fit max-w-[95vw] max-h-[90vh] bg-[#0a0a0a] rounded-2xl overflow-hidden shadow-[0_0_80px_rgba(220,38,38,0.15)] ring-1 ring-white/10"
+            className="relative w-fit h-fit max-w-[95vw] max-h-[90vh] bg-[#0a0a0a] overflow-hidden shadow-[0_0_80px_rgba(220,38,38,0.15)] ring-1 ring-white/10"
             onClick={(e) => e.stopPropagation()}
           >
             <CustomVideoPlayer url={videoUrl} onClose={onClose} imageUrl={image} />

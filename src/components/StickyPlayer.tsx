@@ -27,18 +27,6 @@ export default function StickyPlayer() {
     hasActivePlayback,
   } = useAudioPlayer();
 
-  const progressRef = useRef<HTMLDivElement>(null);
-
-  const onSeekClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (progressRef.current && duration > 0) {
-      const rect = progressRef.current.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const percentage = Math.max(0, Math.min(1, clickX / rect.width));
-      const newTime = percentage * duration;
-      handleSeek(newTime);
-    }
-  };
-
   const progressPercentage = duration > 0 ? (progress / duration) * 100 : 0;
 
   return (
@@ -94,23 +82,17 @@ export default function StickyPlayer() {
             {/* Progress Bar */}
             <div className="flex items-center gap-2 w-full text-[10px] text-gray-500 font-medium">
               <span>{formatTime(progress)}</span>
-              <div
-                ref={progressRef}
-                onClick={onSeekClick}
-                className="relative flex-1 h-[4px] bg-white/10 rounded-full cursor-pointer hover:h-[6px] transition-all group"
-                aria-label="Seek progress"
-                role="slider"
-                aria-valuemin={0}
-                aria-valuemax={duration}
-                aria-valuenow={progress}
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "ArrowRight")
-                    handleSeek(Math.min(duration, progress + 5));
-                  if (e.key === "ArrowLeft")
-                    handleSeek(Math.max(0, progress - 5));
-                }}
-              >
+              <div className="relative flex-1 h-[4px] bg-white/10 rounded-full cursor-pointer hover:h-[6px] transition-all group">
+                <input
+                  type="range"
+                  min={0}
+                  max={duration || 0}
+                  step="any"
+                  value={progress}
+                  onChange={(e) => handleSeek(parseFloat(e.target.value))}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  aria-label="Seek progress"
+                />
                 <div
                   className="absolute top-0 left-0 h-full bg-red-600 rounded-full pointer-events-none"
                   style={{ width: `${progressPercentage}%` }}

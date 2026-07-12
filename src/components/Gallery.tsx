@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -51,6 +52,11 @@ const getBoxClass = (type: LayoutType) => {
 
 export default function Gallery() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const currentIndex = selectedImage
     ? images.findIndex((img) => img.src === selectedImage)
@@ -143,101 +149,105 @@ export default function Gallery() {
       </div>
 
       {/* Lightbox Modal */}
-      <AnimatePresence>
-        {selectedImage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-[40] flex items-center justify-center px-4 pt-16 bg-black/80 backdrop-blur-2xl"
-            onClick={() => setSelectedImage(null)}
-          >
-            {/* Close Button */}
-            <button
-              onClick={() => setSelectedImage(null)}
-              className="absolute top-20 right-6 md:top-24 md:right-8 z-50 p-2 text-gray-400 hover:text-white bg-black/20 hover:bg-black/30 rounded-full transition-all"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {selectedImage && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="fixed inset-0 z-[60] flex items-center justify-center px-4 bg-black/80 backdrop-blur-2xl"
+                onClick={() => setSelectedImage(null)}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-
-            {/* Prev Button */}
-            {currentIndex > 0 && (
-              <button
-                onClick={handlePrev}
-                className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-50 p-2 text-gray-400 hover:text-white bg-black/20 hover:bg-black/30 rounded-full transition-all"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+                {/* Close Button */}
+                <button
+                  onClick={() => setSelectedImage(null)}
+                  className="absolute top-6 right-6 md:top-8 md:right-8 z-50 p-2 text-gray-400 hover:text-white bg-black/20 hover:bg-black/30 rounded-full transition-all"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
-            )}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-8 w-8"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
 
-            {/* Next Button */}
-            {currentIndex !== -1 && currentIndex < images.length - 1 && (
-              <button
-                onClick={handleNext}
-                className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-50 p-2 text-gray-400 hover:text-white bg-black/20 hover:bg-black/30 rounded-full transition-all"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
-            )}
+                {/* Prev Button */}
+                {currentIndex > 0 && (
+                  <button
+                    onClick={handlePrev}
+                    className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-50 p-2 text-gray-400 hover:text-white bg-black/20 hover:bg-black/30 rounded-full transition-all"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-8 w-8"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M15 19l-7-7 7-7"
+                      />
+                    </svg>
+                  </button>
+                )}
 
-            {/* Image Container */}
-            <AnimatePresence mode="wait">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <motion.img
-                key={selectedImage}
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.95, opacity: 0 }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                src={selectedImage}
-                alt="Fullscreen gallery image"
-                className="max-w-[90vw] max-h-[calc(100vh-7rem)] w-auto h-auto object-contain shadow-2xl"
-                onClick={(e) => e.stopPropagation()} // Prevent click from closing when clicking exactly on the image
-              />
-            </AnimatePresence>
-          </motion.div>
+                {/* Next Button */}
+                {currentIndex !== -1 && currentIndex < images.length - 1 && (
+                  <button
+                    onClick={handleNext}
+                    className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-50 p-2 text-gray-400 hover:text-white bg-black/20 hover:bg-black/30 rounded-full transition-all"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-8 w-8"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
+                )}
+
+                {/* Image Container */}
+                <AnimatePresence mode="wait">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <motion.img
+                    key={selectedImage}
+                    initial={{ scale: 0.95, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.95, opacity: 0 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    src={selectedImage}
+                    alt="Fullscreen gallery image"
+                    className="max-w-[90vw] max-h-[calc(100vh-7rem)] w-auto h-auto object-contain shadow-2xl"
+                    onClick={(e) => e.stopPropagation()} // Prevent click from closing when clicking exactly on the image
+                  />
+                </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body,
         )}
-      </AnimatePresence>
     </section>
   );
 }

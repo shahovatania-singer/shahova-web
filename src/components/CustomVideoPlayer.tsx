@@ -153,7 +153,7 @@ export default function CustomVideoPlayer({
         <div className="w-full flex justify-end p-4 bg-gradient-to-b from-black/80 to-transparent pointer-events-none">
           <button
             onClick={onClose}
-            className="w-12 h-12 flex items-center justify-center rounded-full bg-black/40 hover:bg-red-600 transition-colors text-white backdrop-blur-md pointer-events-auto shadow-lg"
+            className="w-12 h-12 flex items-center justify-center rounded-full bg-black/20 transition-colors text-white hover:text-red-600 pointer-events-auto shadow-lg"
             aria-label="Close video"
           >
             <svg
@@ -212,7 +212,7 @@ export default function CustomVideoPlayer({
             ></div>
             {/* Thumb on hover */}
             <div
-              className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-red-600 rounded-full shadow-[0_0_12px_rgba(220,38,38,1)] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+              className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-[0_0_12px_rgba(220,38,38,1)] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
               style={{ left: `calc(${played * 100}% - 8px)` }}
             ></div>
           </div>

@@ -28,7 +28,6 @@ export default function Music() {
     currentSong,
   } = useAudioPlayer();
 
-  const progressRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const entry = useIntersectionObserver(sectionRef, { threshold: 0.1 });
 
@@ -37,16 +36,6 @@ export default function Music() {
     const isVisible = entry ? entry.isIntersecting : true;
     setIsMainPlayerVisible(isVisible);
   }, [entry, setIsMainPlayerVisible]);
-
-  const onSeekClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (progressRef.current && duration > 0) {
-      const rect = progressRef.current.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const percentage = Math.max(0, Math.min(1, clickX / rect.width));
-      const newTime = percentage * duration;
-      handleSeek(newTime);
-    }
-  };
 
   const progressPercentage = duration > 0 ? (progress / duration) * 100 : 0;
 
@@ -146,11 +135,17 @@ export default function Music() {
             <span className="w-8 text-right text-gray-300">
               {formatTime(progress)}
             </span>
-            <div
-              ref={progressRef}
-              onClick={onSeekClick}
-              className="relative flex-1 h-[4px] bg-white/10 rounded-full cursor-pointer hover:h-[6px] transition-all"
-            >
+            <div className="relative flex-1 h-[4px] bg-white/10 rounded-full cursor-pointer hover:h-[6px] transition-all group">
+              <input
+                type="range"
+                min={0}
+                max={duration || 0}
+                step="any"
+                value={progress}
+                onChange={(e) => handleSeek(parseFloat(e.target.value))}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                aria-label="Seek progress"
+              />
               {/* Filled part */}
               <div
                 className="absolute top-0 left-0 h-full bg-red-600 rounded-full pointer-events-none"
@@ -158,12 +153,12 @@ export default function Music() {
               ></div>
               {/* Handle */}
               <div
-                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-red-600 rounded-full shadow-[0_0_10px_rgba(220,38,38,0.8)] pointer-events-none"
-                style={{ left: `calc(${progressPercentage}% - 6px)` }}
+                className="absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-sm pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ left: `calc(${progressPercentage}% - 4px)` }}
               ></div>
             </div>
             <span className="w-8 text-left text-gray-300">
-              {formatTime(duration - progress)}
+              -{formatTime(duration - progress)}
             </span>
           </div>
 
