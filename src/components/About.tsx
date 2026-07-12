@@ -122,7 +122,7 @@ export default function About() {
         </div>
       </div>
 
-      {/* Award Modal Popup */}
+      {/* Modal Popup */}
       {mounted &&
         createPortal(
           <AnimatePresence>

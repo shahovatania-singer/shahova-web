@@ -34,11 +34,11 @@ export default function Home() {
       {/* Experience Section */}
       <Experience />
 
-      {/* Gallery Section */}
-      <Gallery />
-
       {/* Format Section */}
       <Format />
+
+      {/* Gallery Section */}
+      <Gallery />
 
       {/* Contact Section */}
       <Contact />

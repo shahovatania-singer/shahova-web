@@ -23,25 +23,27 @@ export default function VideoModal({ isOpen, onClose, videoUrl, title, image }: 
   }, []);
 
   useEffect(() => {
+    if (isOpen && isPlaying) {
+      pauseMusic();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
 
-    if (isOpen) {
-      if (isPlaying) {
-        pauseMusic();
-      }
-      document.body.style.overflow = "hidden";
-      window.addEventListener("keydown", handleKeyDown);
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isOpen, onClose, isPlaying, pauseMusic]);
+  }, [isOpen, onClose]);
 
   if (!mounted) return null;
 

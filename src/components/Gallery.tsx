@@ -148,7 +148,7 @@ export default function Gallery() {
         })}
       </div>
 
-      {/* Lightbox Modal */}
+      {/* Modal Popup */}
       {mounted &&
         createPortal(
           <AnimatePresence>
