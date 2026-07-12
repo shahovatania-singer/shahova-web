@@ -1,3 +1,4 @@
+import Loading from "@/components/Loading";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
@@ -13,6 +14,9 @@ import StickyPlayer from "@/components/StickyPlayer";
 export default function Home() {
   return (
     <main className="relative min-h-screen flex flex-col bg-[#0d0d0d] text-white overflow-hidden selection:bg-red-600 selection:text-white">
+      {/* Loading Screen */}
+      <Loading />
+
       {/* Noise Overlay */}
       <div className="absolute inset-0 bg-noise opacity-30 pointer-events-none mix-blend-overlay"></div>
 
