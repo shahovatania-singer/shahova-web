@@ -28,6 +28,14 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <link
+          rel="preload"
+          as="image"
+          href="/image/artist.webp"
+          fetchPriority="high"
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <AudioPlayerProvider>
           {children}
