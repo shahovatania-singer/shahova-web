@@ -48,4 +48,25 @@ export const SONGS = [
     image: "/image/Tainted Love clip.webp",
     src: "/sound/Tainted Love.MP3",
   },
+  {
+    id: 8,
+    title: "Birthday Party",
+    artist: "Featured Track",
+    image: "/image/Birthday Party clip.webp",
+    src: "/sound/Birthday Party.mp3",
+  },
+  {
+    id: 9,
+    title: "Весняним Дощем",
+    artist: "Featured Track",
+    image: "/image/Весняним дощем clip.webp",
+    src: "/sound/Pid Vesnyanym.mp3",
+  },
+  {
+    id: 10,
+    title: "Too Loud",
+    artist: "Featured Track",
+    image: "/image/Too Loud.webp",
+    src: "/sound/Too Loud.mp3", 
+  },
 ];

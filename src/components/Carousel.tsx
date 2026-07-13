@@ -71,6 +71,18 @@ const items = [
     image: "/image/Stolen Dance clip.webp",
     video: "/video/Stolen Dance clip.mp4",
   },
+  {
+    id: 12,
+    title: "Too Loud",
+    image: "/image/Too Loud.webp",
+    video: "/video/Too Loud.mp4",
+  },
+  {
+    id: 13,
+    title: "Moonlight",
+    image: "/image/Moonlight.webp",
+    video: "/video/Moonlight.mp4",
+  },
 ];
 
 export default function Carousel() {

@@ -36,7 +36,7 @@ export default function Loading({ onComplete }: LoadingProps) {
         setTimeout(() => {
           setIsFinished(true);
           onComplete?.();
-        }, 1000);
+        }, 1200);
       }, 1000);
       return () => clearTimeout(timeout);
     }
@@ -46,7 +46,7 @@ export default function Loading({ onComplete }: LoadingProps) {
       () => {
         setIndex((prev) => prev + 1);
       },
-      index === 0 ? 1500 : 1500,
+      index === 0 ? 1200 : 1200,
     );
     return () => clearTimeout(timeout);
   }, [index, onComplete]);
@@ -62,7 +62,7 @@ export default function Loading({ onComplete }: LoadingProps) {
     },
     exit: {
       d: targetPath,
-      transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: 0.4 },
+      transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] },
     },
   };
 
@@ -72,31 +72,31 @@ export default function Loading({ onComplete }: LoadingProps) {
     },
     exit: {
       top: "-100vh",
-      transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: 0.4 },
+      transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] },
     },
   };
 
-  // Content shrinks and fades out prior to the slide up
+  // Content shrinks and fades out alongside the slide up
   const contentFadeOut: Variants = {
     initial: { opacity: 1, scale: 1 },
     exit: {
       opacity: 0,
       scale: 0.95,
-      transition: { duration: 0.5, ease: "easeInOut" },
+      transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] },
     },
   };
 
   // Word transition animations
   const wordAnimation: Variants = {
-    initial: { opacity: 0, y: 15 },
-    enter: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
-    exit: { opacity: 0, y: -15, transition: { duration: 0.4, ease: "easeIn" } },
+    initial: { opacity: 0 },
+    enter: { opacity: 1, transition: { duration: 0.6, ease: "easeInOut" } },
+    exit: { opacity: 0, transition: { duration: 0.5, ease: "easeInOut" } },
   };
 
   const dotAnimation: Variants = {
     initial: { opacity: 0 },
-    enter: { opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
-    exit: { opacity: 0, transition: { duration: 0.4, ease: "easeIn" } },
+    enter: { opacity: 1, transition: { duration: 0.6, ease: "easeInOut" } },
+    exit: { opacity: 0, transition: { duration: 0.5, ease: "easeInOut" } },
   };
 
   if (isFinished) return null;

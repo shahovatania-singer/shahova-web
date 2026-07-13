@@ -77,7 +77,7 @@ export default function Header() {
             onClick={(e) => handleScroll(e, "contact")}
             className="hidden md:flex items-center gap-2 text-[10px] sm:text-sm font-medium tracking-wider cursor-pointer group"
           >
-            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-600 group-hover:scale-125 transition-transform"></span>
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-600 animate-pulse group-hover:scale-125 transition-transform"></span>
             <span className="uppercase text-gray-300 group-hover:text-white transition-colors">
               Get in touch
             </span>
@@ -139,7 +139,7 @@ export default function Header() {
                 onClick={(e) => handleScroll(e, "contact")}
                 className="flex items-center space-x-3 text-lg font-semibold tracking-widest cursor-pointer group"
               >
-                <span className="w-2 h-2 rounded-full bg-red-600 group-hover:scale-125 transition-transform"></span>
+                <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse group-hover:scale-125 transition-transform"></span>
                 <span className="uppercase text-gray-300 group-hover:text-white transition-colors">
                   Get in touch
                 </span>
