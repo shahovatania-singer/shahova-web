@@ -339,7 +339,7 @@ export default function Format() {
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 className={`absolute inset-0 bottom-0 overflow-hidden shadow-[0px_0px_50px_rgba(0,0,0,0.5)] bg-zinc-900 ${
                   !isFront
-                    ? "border-l-[4px] border-[#0d0d0d] grayscale mix-blend-luminosity"
+                    ? "border-l-[4px] border-black grayscale mix-blend-luminosity"
                     : ""
                 }`}
                 style={{ right: "48px" }} // Make room for the shifted back elements

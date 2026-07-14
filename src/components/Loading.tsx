@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import Image from "next/image";
+import { StarsBackground } from "./StarsBackground";
 
 const words = ["Hello", "Привет", "שלום"];
 
@@ -130,6 +131,20 @@ export default function Loading({ onComplete }: LoadingProps) {
           />
         </svg>
       )}
+
+      {/* 
+        Floating Stars Background.
+        Layered above the black background but behind the content.
+        Fades out alongside the content during the exit transition.
+      */}
+      <motion.div
+        variants={contentFadeOut}
+        initial="initial"
+        animate={isExiting ? "exit" : "initial"}
+        className="absolute inset-0 w-full h-full pointer-events-none -z-15"
+      >
+        <StarsBackground className="bg-transparent min-h-0" />
+      </motion.div>
 
       {/* 
         Red Gradient Breathing Glow.

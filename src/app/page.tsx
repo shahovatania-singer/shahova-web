@@ -10,48 +10,51 @@ import Format from "@/components/Format";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import StickyPlayer from "@/components/StickyPlayer";
+import { StarsBackground } from "@/components/StarsBackground";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen flex flex-col bg-[#0d0d0d] text-white overflow-hidden selection:bg-red-600 selection:text-white">
-      {/* Loading Screen */}
-      <Loading />
+    <main className="relative min-h-screen flex flex-col text-white selection:bg-red-600 selection:text-white bg-black">
+      <StarsBackground starColor="#cccccc">
+        {/* Loading Screen */}
+        <Loading />
 
-      {/* Noise Overlay */}
-      <div className="absolute inset-0 bg-noise opacity-30 pointer-events-none mix-blend-overlay"></div>
+        {/* Noise Overlay */}
+        <div className="absolute inset-0 bg-noise opacity-30 pointer-events-none mix-blend-overlay z-50"></div>
 
-      {/* Header */}
-      <Header />
+        {/* Header */}
+        <Header />
 
-      {/* Hero Section */}
-      <Hero />
+        {/* Hero Section */}
+        <Hero />
 
-      {/* About Section */}
-      <About />
+        {/* About Section */}
+        <About />
 
-      {/* Music Section */}
-      <Music />
+        {/* Music Section */}
+        <Music />
 
-      {/* Live Section */}
-      <Live />
+        {/* Live Section */}
+        <Live />
 
-      {/* Experience Section */}
-      <Experience />
+        {/* Experience Section */}
+        <Experience />
 
-      {/* Format Section */}
-      <Format />
+        {/* Format Section */}
+        <Format />
 
-      {/* Gallery Section */}
-      <Gallery />
+        {/* Gallery Section */}
+        <Gallery />
 
-      {/* Contact Section */}
-      <Contact />
+        {/* Contact Section */}
+        <Contact />
 
-      {/* Footer */}
-      <Footer />
+        {/* Footer */}
+        <Footer />
 
-      {/* Sticky Player */}
-      <StickyPlayer />
+        {/* Sticky Player */}
+        <StickyPlayer />
+      </StarsBackground>
     </main>
   );
 }

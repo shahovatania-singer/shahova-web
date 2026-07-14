@@ -77,7 +77,7 @@ export default function Music() {
                 animate={{
                   x: `${offset * 105}%`,
                   scale: isCenter ? 1 : 0.65,
-                  opacity: isVisible ? (isCenter ? 1 : 0.4) : 0,
+                  opacity: isVisible ? 1 : 0,
                   zIndex: 30 - Math.abs(offset) * 10,
                   filter: isCenter
                     ? "grayscale(0%) brightness(1)"
@@ -96,12 +96,7 @@ export default function Music() {
                     className={`object-cover transition-all duration-700 ${isCenter ? "opacity-100" : "opacity-60"}`}
                   />
 
-                  {/* Red border & dot for inactive cards */}
-                  {!isCenter && (
-                    <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-red-600 flex justify-center items-center">
-                      <div className="w-2 h-2 rounded-full border-[2px] border-red-600 bg-[#0d0d0d]"></div>
-                    </div>
-                  )}
+
                 </div>
 
                 {/* Inactive Card Info below image */}

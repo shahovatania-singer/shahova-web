@@ -92,6 +92,8 @@ export default function Carousel() {
     image: string;
   } | null>(null);
 
+  const [clipPathD, setClipPathD] = useState<string>('');
+
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const setRef = useRef<HTMLDivElement>(null);
@@ -111,6 +113,50 @@ export default function Carousel() {
   useEffect(() => {
     isVideoOpenRef.current = !!selectedVideo;
   }, [selectedVideo]);
+
+  // Compute a perfect geometric clip-path for smooth, aliasing-free edges
+  useEffect(() => {
+    if (!containerRef.current) return;
+    
+    const updateClipPath = (W: number, H: number) => {
+      if (W === 0 || H === 0) return;
+      
+      const isDesktop = window.innerWidth >= 768;
+      const rx = W * 0.75;
+      const sqrt5_3 = 0.74535599; // Math.sqrt(5) / 3
+      
+      const cy_top = isDesktop ? 14 : -1;
+      const ry_top = isDesktop ? 70 : 55;
+      const y_top_edge = cy_top + ry_top * sqrt5_3;
+      
+      const cy_bot = H - (isDesktop ? 29 : 14);
+      const ry_bot = isDesktop ? 70 : 55;
+      const y_bot_edge = cy_bot - ry_bot * sqrt5_3;
+      
+      setClipPathD(`M 0,${y_top_edge.toFixed(2)} A ${rx.toFixed(2)} ${ry_top} 0 0 0 ${W.toFixed(2)},${y_top_edge.toFixed(2)} L ${W.toFixed(2)},${y_bot_edge.toFixed(2)} A ${rx.toFixed(2)} ${ry_bot} 0 0 0 0,${y_bot_edge.toFixed(2)} Z`);
+    };
+
+    const obs = new ResizeObserver((entries) => {
+      const target = entries[0].target as HTMLElement;
+      updateClipPath(target.offsetWidth, target.offsetHeight);
+    });
+    
+    obs.observe(containerRef.current);
+    
+    const handleResize = () => {
+      if (containerRef.current) {
+        updateClipPath(containerRef.current.offsetWidth, containerRef.current.offsetHeight);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    
+    updateClipPath(containerRef.current.offsetWidth, containerRef.current.offsetHeight);
+    
+    return () => {
+      obs.disconnect();
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const openVideo = (videoUrl: string, title: string, image: string) => {
     setSelectedVideo({ url: videoUrl, title, image });
@@ -245,16 +291,22 @@ export default function Carousel() {
 
   return (
     <>
+      <svg width="0" height="0" className="absolute pointer-events-none">
+        <defs>
+          <clipPath id="carousel-clip">
+            {clipPathD && <path d={clipPathD} />}
+          </clipPath>
+        </defs>
+      </svg>
       <div
         ref={containerRef}
         className="relative w-full max-w-[100vw] overflow-hidden mt-12 py-10 touch-pan-y select-none"
+        style={{
+          clipPath: clipPathD ? 'url(#carousel-clip)' : 'none',
+          WebkitClipPath: clipPathD ? 'url(#carousel-clip)' : 'none',
+          transform: 'translateZ(0)' // Hardware acceleration
+        }}
       >
-        {/* Top Curve Geometry */}
-        <div className="pointer-events-none absolute -top-[56px] md:-top-[56px] -left-[25%] w-[150%] h-[110px] md:h-[140px] bg-[#0d0d0d] rounded-[100%] z-20" />
-
-        {/* Bottom Curve Geometry */}
-        <div className="pointer-events-none absolute -bottom-[41px] md:-bottom-[41px] -left-[25%] w-[150%] h-[110px] md:h-[140px] bg-[#0d0d0d] rounded-[100%] z-20" />
-
         <div
           ref={trackRef}
           className="flex w-max will-change-transform"

@@ -29,7 +29,7 @@ export default function Experience() {
         {/* Left Column - Image Stack */}
         <div className="relative w-full md:w-[80%] lg:w-[55%] flex-shrink-0 flex flex-col">
           {/* Third Layer */}
-          <div className="absolute top-0 bottom-0 w-full translate-x-[32px] z-0 overflow-hidden border-l-[4px] border-[#0d0d0d]">
+          <div className="absolute top-0 bottom-0 w-full translate-x-[32px] z-0 overflow-hidden border-l-[4px] border-black">
             <Image
               src="/image/Experience.webp"
               alt=""
@@ -40,7 +40,7 @@ export default function Experience() {
           </div>
 
           {/* Second Layer */}
-          <div className="absolute top-0 bottom-0 w-full translate-x-[16px] z-10 overflow-hidden border-l-[4px] border-[#0d0d0d]">
+          <div className="absolute top-0 bottom-0 w-full translate-x-[16px] z-10 overflow-hidden border-l-[4px] border-black">
             <Image
               src="/image/Experience.webp"
               alt=""
