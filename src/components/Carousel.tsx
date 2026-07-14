@@ -92,7 +92,7 @@ export default function Carousel() {
     image: string;
   } | null>(null);
 
-  const [clipPathD, setClipPathD] = useState<string>('');
+  const [clipPathD, setClipPathD] = useState<string>("");
 
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -107,7 +107,7 @@ export default function Carousel() {
   const hasDraggedRef = useRef(false);
   const lastTimeRef = useRef(0);
 
-  const speedRef = useRef(50); // px per sec
+  const speedRef = useRef(75); // px per sec
   const isVideoOpenRef = useRef(false);
 
   useEffect(() => {
@@ -117,44 +117,52 @@ export default function Carousel() {
   // Compute a perfect geometric clip-path for smooth, aliasing-free edges
   useEffect(() => {
     if (!containerRef.current) return;
-    
+
     const updateClipPath = (W: number, H: number) => {
       if (W === 0 || H === 0) return;
-      
+
       const isDesktop = window.innerWidth >= 768;
       const rx = W * 0.75;
       const sqrt5_3 = 0.74535599; // Math.sqrt(5) / 3
-      
+
       const cy_top = isDesktop ? 14 : -1;
       const ry_top = isDesktop ? 70 : 55;
       const y_top_edge = cy_top + ry_top * sqrt5_3;
-      
+
       const cy_bot = H - (isDesktop ? 29 : 14);
       const ry_bot = isDesktop ? 70 : 55;
       const y_bot_edge = cy_bot - ry_bot * sqrt5_3;
-      
-      setClipPathD(`M 0,${y_top_edge.toFixed(2)} A ${rx.toFixed(2)} ${ry_top} 0 0 0 ${W.toFixed(2)},${y_top_edge.toFixed(2)} L ${W.toFixed(2)},${y_bot_edge.toFixed(2)} A ${rx.toFixed(2)} ${ry_bot} 0 0 0 0,${y_bot_edge.toFixed(2)} Z`);
+
+      setClipPathD(
+        `M 0,${y_top_edge.toFixed(2)} A ${rx.toFixed(2)} ${ry_top} 0 0 0 ${W.toFixed(2)},${y_top_edge.toFixed(2)} L ${W.toFixed(2)},${y_bot_edge.toFixed(2)} A ${rx.toFixed(2)} ${ry_bot} 0 0 0 0,${y_bot_edge.toFixed(2)} Z`,
+      );
     };
 
     const obs = new ResizeObserver((entries) => {
       const target = entries[0].target as HTMLElement;
       updateClipPath(target.offsetWidth, target.offsetHeight);
     });
-    
+
     obs.observe(containerRef.current);
-    
+
     const handleResize = () => {
       if (containerRef.current) {
-        updateClipPath(containerRef.current.offsetWidth, containerRef.current.offsetHeight);
+        updateClipPath(
+          containerRef.current.offsetWidth,
+          containerRef.current.offsetHeight,
+        );
       }
     };
-    window.addEventListener('resize', handleResize);
-    
-    updateClipPath(containerRef.current.offsetWidth, containerRef.current.offsetHeight);
-    
+    window.addEventListener("resize", handleResize);
+
+    updateClipPath(
+      containerRef.current.offsetWidth,
+      containerRef.current.offsetHeight,
+    );
+
     return () => {
       obs.disconnect();
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -200,7 +208,7 @@ export default function Carousel() {
       }
 
       if (trackRef.current) {
-        trackRef.current.style.transform = `translate3d(-${offsetRef.current}px, 0, 0)`;
+        trackRef.current.style.transform = `translate3d(-${offsetRef.current.toFixed(2)}px, 0, 0)`;
       }
 
       requestRef.current = requestAnimationFrame(loop);
@@ -302,15 +310,22 @@ export default function Carousel() {
         ref={containerRef}
         className="relative w-full max-w-[100vw] overflow-hidden mt-12 py-10 touch-pan-y select-none"
         style={{
-          clipPath: clipPathD ? 'url(#carousel-clip)' : 'none',
-          WebkitClipPath: clipPathD ? 'url(#carousel-clip)' : 'none',
-          transform: 'translateZ(0)' // Hardware acceleration
+          clipPath: clipPathD ? "url(#carousel-clip)" : "none",
+          WebkitClipPath: clipPathD ? "url(#carousel-clip)" : "none",
+          transform: "translateZ(0)", // Hardware acceleration
+          backfaceVisibility: "hidden",
+          WebkitBackfaceVisibility: "hidden",
         }}
       >
         <div
           ref={trackRef}
           className="flex w-max will-change-transform"
-          style={{ transform: "translate3d(0, 0, 0)", cursor: "grab" }}
+          style={{
+            transform: "translate3d(0, 0, 0)",
+            cursor: "grab",
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+          }}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerEnter={handlePointerEnter}
@@ -328,11 +343,15 @@ export default function Carousel() {
               key={setIndex}
               ref={setIndex === 0 ? setRef : null}
               className="flex gap-4 md:gap-[50px] pr-4 md:pr-[50px]"
+              style={{
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
+              }}
             >
               {items.map((item, i) => (
                 <div
                   key={`${setIndex}-${i}`}
-                  className="group relative h-[360px] w-[190px] md:h-[470px] md:w-[248px] flex-shrink-0 transition-transform duration-700 origin-center hover:scale-110 cursor-pointer overflow-hidden"
+                  className="group relative h-[360px] w-[190px] md:h-[470px] md:w-[248px] flex-shrink-0 transition-transform duration-700 origin-center hover:scale-110 cursor-pointer overflow-hidden transform-gpu [backface-visibility:hidden] [-webkit-backface-visibility:hidden] [transform-style:preserve-3d] [-webkit-transform-style:preserve-3d]"
                   onClick={(e) => handleCardClick(e, item)}
                 >
                   <Image
@@ -342,11 +361,11 @@ export default function Carousel() {
                     sizes="(max-width: 768px) 190px, 248px"
                     priority={setIndex === 0 && i < 4}
                     draggable={false}
-                    className="object-cover pointer-events-none"
+                    className="object-cover pointer-events-none transform-gpu [backface-visibility:hidden] [-webkit-backface-visibility:hidden]"
                   />
 
                   {/* Overlay on hover */}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col items-center justify-center p-4 text-center pointer-events-none">
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col items-center justify-center p-4 text-center pointer-events-none [backface-visibility:hidden] [-webkit-backface-visibility:hidden]">
                     {/* Play Icon */}
                     <div className="w-14 h-14 md:w-16 md:h-16 rounded-full border border-red-600 flex items-center justify-center text-white mb-4 bg-red-600 transition-all duration-500 group-hover:scale-110 shadow-[0_0_20px_rgba(220,38,38,0.5)] backdrop-blur-sm translate-y-4 group-hover:translate-y-0">
                       <svg
