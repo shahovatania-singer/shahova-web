@@ -52,9 +52,9 @@ export default function Loading({ onComplete }: LoadingProps) {
     return () => clearTimeout(timeout);
   }, [index, onComplete]);
 
-  // SVG paths for the curved exit transition
-  const initialPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height + 300} 0 ${dimension.height} L0 0`;
-  const targetPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height} 0 ${dimension.height} L0 0`;
+  // SVG paths for the curved exit transition. Extended horizontally by 50px to prevent fractional pixel gaps on mobile.
+  const initialPath = `M-50 0 L${dimension.width + 50} 0 L${dimension.width + 50} ${dimension.height} Q${dimension.width / 2} ${dimension.height + 300} -50 ${dimension.height} L-50 0`;
+  const targetPath = `M-50 0 L${dimension.width + 50} 0 L${dimension.width + 50} ${dimension.height} Q${dimension.width / 2} ${dimension.height} -50 ${dimension.height} L-50 0`;
 
   const curve: Variants = {
     initial: {
@@ -69,10 +69,10 @@ export default function Loading({ onComplete }: LoadingProps) {
 
   const slideUp: Variants = {
     initial: {
-      top: 0,
+      y: 0,
     },
     exit: {
-      top: "-100vh",
+      y: "-100vh",
       transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] },
     },
   };
@@ -107,7 +107,7 @@ export default function Loading({ onComplete }: LoadingProps) {
       variants={slideUp}
       initial="initial"
       animate={isExiting ? "exit" : "initial"}
-      className="fixed inset-0 w-screen h-screen flex items-center justify-center z-[99999]"
+      className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-[99999]"
     >
       {/* 
         Fallback solid background.
@@ -122,7 +122,7 @@ export default function Loading({ onComplete }: LoadingProps) {
         Forms the curved bottom edge when sliding up to reveal the main page.
       */}
       {dimension.width > 0 && (
-        <svg className="absolute top-0 left-0 w-full h-[calc(100%+300px)] pointer-events-none -z-20">
+        <svg className="absolute top-0 left-0 w-full h-[calc(100%+300px)] pointer-events-none -z-20 overflow-visible">
           <motion.path
             variants={curve}
             initial="initial"
@@ -170,8 +170,9 @@ export default function Loading({ onComplete }: LoadingProps) {
         {/* 
           Proportional Container:
           Keeps the text offset visually consistent relative to the image across all screen sizes.
+          Also shifts slightly left to visually center the image+text composition.
         */}
-        <div className="relative w-full max-w-[320px] sm:max-w-[400px] md:max-w-[480px] aspect-[3/4]">
+        <div className="relative w-full max-w-[320px] sm:max-w-[400px] md:max-w-[480px] aspect-[3/4] -translate-x-[10%] sm:-translate-x-[12%] md:-translate-x-[15%]">
           {/* Artist Image (static) */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="relative w-full h-full">
