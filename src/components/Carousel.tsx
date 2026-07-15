@@ -208,7 +208,7 @@ export default function Carousel() {
       }
 
       if (trackRef.current) {
-        trackRef.current.style.transform = `translate3d(-${offsetRef.current.toFixed(2)}px, 0, 0)`;
+        trackRef.current.style.transform = `translate3d(-${offsetRef.current}px, 0, 0)`;
       }
 
       requestRef.current = requestAnimationFrame(loop);
@@ -299,22 +299,13 @@ export default function Carousel() {
 
   return (
     <>
-      <svg width="0" height="0" className="absolute pointer-events-none">
-        <defs>
-          <clipPath id="carousel-clip">
-            {clipPathD && <path d={clipPathD} />}
-          </clipPath>
-        </defs>
-      </svg>
       <div
         ref={containerRef}
         className="relative w-full max-w-[100vw] overflow-hidden mt-12 py-10 touch-pan-y select-none"
         style={{
-          clipPath: clipPathD ? "url(#carousel-clip)" : "none",
-          WebkitClipPath: clipPathD ? "url(#carousel-clip)" : "none",
+          clipPath: clipPathD ? `path('${clipPathD}')` : "none",
+          WebkitClipPath: clipPathD ? `path('${clipPathD}')` : "none",
           transform: "translateZ(0)", // Hardware acceleration
-          backfaceVisibility: "hidden",
-          WebkitBackfaceVisibility: "hidden",
         }}
       >
         <div
@@ -323,8 +314,6 @@ export default function Carousel() {
           style={{
             transform: "translate3d(0, 0, 0)",
             cursor: "grab",
-            backfaceVisibility: "hidden",
-            WebkitBackfaceVisibility: "hidden",
           }}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
@@ -343,15 +332,11 @@ export default function Carousel() {
               key={setIndex}
               ref={setIndex === 0 ? setRef : null}
               className="flex gap-4 md:gap-[50px] pr-4 md:pr-[50px]"
-              style={{
-                backfaceVisibility: "hidden",
-                WebkitBackfaceVisibility: "hidden",
-              }}
             >
               {items.map((item, i) => (
                 <div
                   key={`${setIndex}-${i}`}
-                  className="group relative h-[360px] w-[190px] md:h-[470px] md:w-[248px] flex-shrink-0 transition-transform duration-700 origin-center hover:scale-110 cursor-pointer overflow-hidden transform-gpu [backface-visibility:hidden] [-webkit-backface-visibility:hidden] [transform-style:preserve-3d] [-webkit-transform-style:preserve-3d]"
+                  className="group relative h-[360px] w-[190px] md:h-[470px] md:w-[248px] flex-shrink-0 transition-transform duration-700 origin-center hover:scale-110 cursor-pointer overflow-hidden transform-gpu will-change-transform"
                   onClick={(e) => handleCardClick(e, item)}
                 >
                   <Image
@@ -361,11 +346,11 @@ export default function Carousel() {
                     sizes="(max-width: 768px) 190px, 248px"
                     priority={setIndex === 0 && i < 4}
                     draggable={false}
-                    className="object-cover pointer-events-none transform-gpu [backface-visibility:hidden] [-webkit-backface-visibility:hidden]"
+                    className="object-cover pointer-events-none"
                   />
 
                   {/* Overlay on hover */}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col items-center justify-center p-4 text-center pointer-events-none [backface-visibility:hidden] [-webkit-backface-visibility:hidden]">
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col items-center justify-center p-4 text-center pointer-events-none">
                     {/* Play Icon */}
                     <div className="w-14 h-14 md:w-16 md:h-16 rounded-full border border-red-600 flex items-center justify-center text-white mb-4 bg-red-600 transition-all duration-500 group-hover:scale-110 shadow-[0_0_20px_rgba(220,38,38,0.5)] backdrop-blur-sm translate-y-4 group-hover:translate-y-0">
                       <svg
