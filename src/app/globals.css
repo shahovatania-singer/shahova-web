@@ -29,6 +29,19 @@ section[id] {
   }
 }
 
+/*
+  Scroll reveal (see components/Reveal.tsx). Readers who ask for reduced motion
+  get the settled state instead of the rise — pinned here rather than in JS so it
+  holds during SSR, before hydration, and with JavaScript disabled. `!important`
+  is what lets it win over the inline styles framer-motion writes.
+*/
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 .swiper-slide {
   transition: transform 0.3s ease;
 }

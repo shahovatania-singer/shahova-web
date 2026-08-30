@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import Reveal from "./Reveal";
 
 export default function About() {
   const [showAward, setShowAward] = useState(false);
@@ -39,21 +40,21 @@ export default function About() {
       className="relative w-full z-10 py-24 px-8 max-w-[1440px] mx-auto flex flex-col mb-20"
     >
       {/* Top Label */}
-      <div className="mb-6 z-20">
+      <Reveal className="mb-6 z-20">
         <p className="text-xs font-semibold tracking-[0.15em] text-gray-300 uppercase">
           Meet the artist
         </p>
-      </div>
+      </Reveal>
 
       {/* Heading */}
-      <div className="mb-12 md:mb-24 z-20">
+      <Reveal className="mb-12 md:mb-24 z-20" delay={0.08}>
         <h2
           className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black leading-[0.85] tracking-tighter uppercase"
           style={{ textShadow: "0px 0px 40px rgba(255,255,255,0.4)" }}
         >
           ABOUT
         </h2>
-      </div>
+      </Reveal>
 
       {/* Content Columns */}
       <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 lg:items-stretch items-center w-full">

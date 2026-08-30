@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { SONGS } from "@/constants/songs";
 import { useAudioPlayer } from "@/context/AudioPlayerContext";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import Reveal from "./Reveal";
 
 const formatTime = (seconds: number) => {
   if (!Number.isFinite(seconds) || seconds <= 0) return "0:00";
@@ -47,15 +48,19 @@ export default function Music() {
     >
       {/* Heading */}
       <div className="mb-12 md:mb-24 z-20">
-        <p className="text-xs font-semibold tracking-[0.15em] text-gray-300 uppercase mb-4">
-          Listen to her journey
-        </p>
-        <h2
-          className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black leading-[0.85] tracking-tighter uppercase"
-          style={{ textShadow: "0px 0px 40px rgba(255,255,255,0.4)" }}
-        >
-          MUSIC
-        </h2>
+        <Reveal>
+          <p className="text-xs font-semibold tracking-[0.15em] text-gray-300 uppercase mb-4">
+            Listen to her journey
+          </p>
+        </Reveal>
+        <Reveal delay={0.08}>
+          <h2
+            className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black leading-[0.85] tracking-tighter uppercase"
+            style={{ textShadow: "0px 0px 40px rgba(255,255,255,0.4)" }}
+          >
+            MUSIC
+          </h2>
+        </Reveal>
       </div>
 
       {/* Carousel & Player Area */}

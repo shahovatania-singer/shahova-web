@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import VideoModal from "./VideoModal";
+import Reveal from "./Reveal";
 
 const PERFORMANCES = [
   {
@@ -77,15 +78,19 @@ export default function Live() {
     >
       {/* Heading */}
       <div className="mb-12 md:mb-24">
-        <p className="text-xs font-semibold tracking-[0.15em] text-gray-300 uppercase mb-4">
-          Feel the magic of the stage
-        </p>
-        <h2
-          className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black leading-[0.85] tracking-tighter uppercase"
-          style={{ textShadow: "0px 0px 40px rgba(255,255,255,0.4)" }}
-        >
-          LIVE PERFORMANCES
-        </h2>
+        <Reveal>
+          <p className="text-xs font-semibold tracking-[0.15em] text-gray-300 uppercase mb-4">
+            Feel the magic of the stage
+          </p>
+        </Reveal>
+        <Reveal delay={0.08}>
+          <h2
+            className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black leading-[0.85] tracking-tighter uppercase"
+            style={{ textShadow: "0px 0px 40px rgba(255,255,255,0.4)" }}
+          >
+            LIVE PERFORMANCES
+          </h2>
+        </Reveal>
       </div>
 
       {/* Grid */}
