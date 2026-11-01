@@ -33,10 +33,10 @@ export default function Header() {
 
   const navLinks = [
     { id: "about", label: "ABOUT" },
+    { id: "format", label: "FORMAT" },
     { id: "music", label: "MUSIC" },
     { id: "live", label: "LIVE" },
     { id: "experience", label: "EXPERIENCE" },
-    { id: "format", label: "FORMAT" },
     { id: "gallery", label: "GALLERY" },
   ];
 

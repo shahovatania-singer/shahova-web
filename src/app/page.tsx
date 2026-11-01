@@ -31,6 +31,9 @@ export default function Home() {
         {/* About Section */}
         <About />
 
+        {/* Format Section */}
+        <Format />
+
         {/* Music Section */}
         <Music />
 
@@ -39,9 +42,6 @@ export default function Home() {
 
         {/* Experience Section */}
         <Experience />
-
-        {/* Format Section */}
-        <Format />
 
         {/* Gallery Section */}
         <Gallery />
