@@ -1,10 +1,90 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, frame, cancelFrame } from "framer-motion";
 import Reveal from "./Reveal";
+
+/**
+ * Below `lg` the list and the photo can't sit side by side, so instead of the
+ * image stack each format opens its own photo directly beneath its row, like a
+ * dropdown. Switching formats collapses the old photo and opens the new one in
+ * the same transition, so the list's total height stays constant.
+ */
+const PANEL_MS = 450;
+const PANEL_TRANSITION = {
+  duration: PANEL_MS / 1000,
+  ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+};
+
+/** Tailwind's `lg` — where the side-by-side layout takes over. */
+const DESKTOP_QUERY = "(min-width: 64rem)";
+
+/** The fixed header is `h-16`; a selected row should settle clear of it. */
+const HEADER_CLEARANCE = 64 + 16;
+
+/** Breathing room between an opened photo and the bottom of the viewport. */
+const BOTTOM_GAP = 16;
+
+/**
+ * Keeps a just-selected format in view while the photos resize.
+ *
+ * Picking a format below the open one collapses the photo above it, which
+ * drags the selected row upward — on a phone, far enough to slide it under the
+ * header or off the screen. For the length of the transition this nudges the
+ * page so the row never rises above the header, and scrolls down to reveal the
+ * opening photo if it would end below the fold. The row is otherwise left to
+ * move naturally. It runs in framer-motion's postRender step so it measures the
+ * heights framer has just written rather than last frame's, and gives way as
+ * soon as the reader scrolls.
+ *
+ * It stops once the transition time is up *and* the layout has stopped moving,
+ * not on a timer alone: on a slow phone a dropped frame can land the final
+ * height after the nominal end, and that last jump is the one that matters.
+ *
+ * Returns a function that stops it early.
+ */
+function followSelection(item: HTMLElement): () => void {
+  const start = performance.now();
+  let lastTop = NaN;
+  let lastHeight = NaN;
+
+  const step = () => {
+    if (!item.isConnected) return stop();
+
+    const { top, bottom } = item.getBoundingClientRect();
+    const overflow = bottom - (window.innerHeight - BOTTOM_GAP);
+
+    let dy = 0;
+    if (top < HEADER_CLEARANCE) dy = top - HEADER_CLEARANCE;
+    else if (overflow > 0) dy = Math.min(overflow, top - HEADER_CLEARANCE);
+
+    // "instant" overrides the `scroll-behavior: smooth` set on <html>.
+    if (dy !== 0) window.scrollBy({ top: dy, behavior: "instant" });
+
+    // offsetTop/offsetHeight are layout positions, unaffected by the scroll
+    // above, so they only stop changing once the photos have finished resizing.
+    const settled =
+      item.offsetTop === lastTop && item.offsetHeight === lastHeight;
+    lastTop = item.offsetTop;
+    lastHeight = item.offsetHeight;
+
+    const elapsed = performance.now() - start;
+    if ((elapsed > PANEL_MS && settled) || elapsed > PANEL_MS + 1000) stop();
+  };
+
+  const stop = () => {
+    cancelFrame(step);
+    window.removeEventListener("wheel", stop);
+    window.removeEventListener("touchstart", stop);
+  };
+
+  frame.postRender(step, true);
+  window.addEventListener("wheel", stop, { passive: true });
+  window.addEventListener("touchstart", stop, { passive: true });
+  return stop;
+}
 
 const FORMATS = [
   {
@@ -228,12 +308,19 @@ export default function Format() {
     };
   }, [activePopup]);
 
-  const handleSelect = (id: string) => {
+  const stopFollowRef = useRef<(() => void) | null>(null);
+
+  const handleSelect = (id: string, item: HTMLElement) => {
     setStackOrder((prev) => {
       const newStack = prev.filter((item) => item !== id);
       newStack.unshift(id); // Move selected to the front
       return newStack;
     });
+
+    // The inline photos only exist in the stacked layout.
+    if (window.matchMedia(DESKTOP_QUERY).matches) return;
+    stopFollowRef.current?.();
+    stopFollowRef.current = followSelection(item);
   };
 
   return (
@@ -260,69 +347,102 @@ export default function Format() {
 
       {/* Content Columns */}
       <div className="flex flex-col lg:flex-row gap-20 lg:gap-32 items-center lg:items-stretch w-full">
-        {/* Left Column - List */}
-        <div className="w-full lg:w-[35%] flex flex-col gap-4">
+        {/* Left Column - List.
+            overflow-anchor is off so Chrome's scroll anchoring doesn't also
+            shift the page while the photos resize — followSelection owns that,
+            and this keeps Chrome and Safari behaving the same. */}
+        <div className="w-full lg:w-[35%] flex flex-col gap-4 [overflow-anchor:none]">
           {FORMATS.map((format) => {
             const isSelected = stackOrder[0] === format.id;
 
             return (
               <div
                 key={format.id}
-                onClick={() => !isSelected && handleSelect(format.id)}
-                className={`flex items-center gap-4 md:gap-6 p-3 md:p-4 transition-all duration-300 border-2 ${
+                onClick={(e) =>
+                  !isSelected && handleSelect(format.id, e.currentTarget)
+                }
+                className={`transition-all duration-300 border-2 ${
                   isSelected
                     ? "border-red-600 bg-red-600/5 cursor-default"
                     : "border-transparent hover:border-white/10 hover:bg-white/5 cursor-pointer"
                 }`}
               >
-                {/* Thumbnail */}
-                <div
-                  className={`relative w-16 h-16 md:w-24 md:h-24 bg-zinc-800 overflow-hidden flex-shrink-0 transition-all duration-300 ${!isSelected ? "grayscale opacity-50" : ""}`}
-                >
-                  <Image
-                    src={format.thumbnail}
-                    alt={format.title}
-                    fill
-                    sizes="(max-width: 768px) 64px, 96px"
-                    className="object-cover"
-                  />
-                </div>
-
-                {/* Text Content */}
-                <div className="flex flex-col flex-1 justify-center min-w-0">
-                  <span
-                    className={`text-2xl md:text-4xl font-black leading-[0.85] tracking-tighter uppercase transition-colors truncate ${
-                      isSelected ? "text-white" : "text-gray-400"
-                    }`}
+                <div className="flex items-center gap-4 md:gap-6 p-3 md:p-4">
+                  {/* Thumbnail */}
+                  <div
+                    className={`relative w-16 h-16 md:w-24 md:h-24 bg-zinc-800 overflow-hidden flex-shrink-0 transition-all duration-300 ${!isSelected ? "grayscale opacity-50" : ""}`}
                   >
-                    {format.title}
-                  </span>
+                    <Image
+                      src={format.thumbnail}
+                      alt={format.title}
+                      fill
+                      sizes="(max-width: 768px) 64px, 96px"
+                      className="object-cover"
+                    />
+                  </div>
 
-                  {isSelected && (
-                    <div className="flex items-center justify-between mt-2 md:mt-3 md:pr-4">
-                      <span className="text-xs font-semibold tracking-[0.15em] text-gray-300 uppercase">
-                        {format.subtitle}
-                      </span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActivePopup(format.id);
-                        }}
-                        // className="text-xs md:text-lg font-medium tracking-widest text-white hover:text-red-600 transition-colors cursor-pointer flex-shrink-0"
-                        className="text-xs font-semibold tracking-[0.15em] text-gray-300 uppercase hover:text-red-600 transition-colors cursor-pointer flex-shrink-0"
-                      >
-                        MORE
-                      </button>
-                    </div>
-                  )}
+                  {/* Text Content */}
+                  <div className="flex flex-col flex-1 justify-center min-w-0">
+                    <span
+                      className={`text-2xl md:text-4xl font-black leading-[0.85] tracking-tighter uppercase transition-colors truncate ${
+                        isSelected ? "text-white" : "text-gray-400"
+                      }`}
+                    >
+                      {format.title}
+                    </span>
+
+                    {isSelected && (
+                      <div className="flex items-center justify-between mt-2 md:mt-3 md:pr-4">
+                        <span className="text-xs font-semibold tracking-[0.15em] text-gray-300 uppercase">
+                          {format.subtitle}
+                        </span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActivePopup(format.id);
+                          }}
+                          // className="text-xs md:text-lg font-medium tracking-widest text-white hover:text-red-600 transition-colors cursor-pointer flex-shrink-0"
+                          className="text-xs font-semibold tracking-[0.15em] text-gray-300 uppercase hover:text-red-600 transition-colors cursor-pointer flex-shrink-0"
+                        >
+                          MORE
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
+
+                {/* Inline photo — stacked layout only (see PANEL_MS) */}
+                <AnimatePresence initial={false}>
+                  {isSelected && (
+                    <motion.div
+                      key="photo"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={PANEL_TRANSITION}
+                      className="overflow-hidden lg:hidden"
+                    >
+                      <div className="px-3 pb-3 md:px-4 md:pb-4">
+                        <div className="relative w-full aspect-[4/3] max-h-[70svh] overflow-hidden bg-zinc-900">
+                          <Image
+                            src={format.mainImage}
+                            alt={format.title}
+                            fill
+                            sizes="100vw"
+                            className="object-cover object-[center_30%]"
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             );
           })}
         </div>
 
-        {/* Right Column - Image Stack */}
-        <div className="relative w-full md:w-[80%] lg:w-[55%] aspect-[16/10] lg:aspect-auto flex-shrink-0 pr-12">
+        {/* Right Column - Image Stack (side-by-side layout only) */}
+        <div className="relative hidden lg:block lg:w-[55%] flex-shrink-0 pr-12">
           {FORMATS.map((format) => {
             const index = stackOrder.indexOf(format.id);
             const isFront = index === 0;
@@ -349,7 +469,7 @@ export default function Format() {
                   src={format.mainImage}
                   alt={format.title}
                   fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 55vw"
+                  sizes="55vw"
                   className="object-cover"
                 />
               </motion.div>
