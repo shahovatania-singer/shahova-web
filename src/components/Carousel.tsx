@@ -5,6 +5,7 @@ import Image from "next/image";
 import VideoModal from "./VideoModal";
 
 const items = [
+  // New version
   {
     id: 1,
     title: "Summer in Hawaii",
@@ -13,27 +14,27 @@ const items = [
   },
   {
     id: 2,
+    title: "Hypnotize",
+    image: "/image/Hypnotize clip.webp",
+    video: "/video/Hypnotize clip.mp4",
+  },
+  {
+    id: 3,
+    title: "Moonlight",
+    image: "/image/Moonlight.webp",
+    video: "/video/Moonlight.mp4",
+  },
+  {
+    id: 4,
     title: "Весняним дощем",
     image: "/image/Весняним дощем clip.webp",
     video: "/video/Весняним дощем clip.mp4",
   },
   {
-    id: 3,
+    id: 5,
     title: "Haifa, Haifa",
     image: "/image/Haifa, Haifa clip.webp",
     video: "/video/Haifa, Haifa clip.mp4",
-  },
-  {
-    id: 4,
-    title: "All I want for Christmas",
-    image: "/image/All I want for Christmas clip.webp",
-    video: "/video/All I want for Christmas clip.mp4",
-  },
-  {
-    id: 5,
-    title: "Hypnotize",
-    image: "/image/Hypnotize clip.webp",
-    video: "/video/Hypnotize clip.mp4",
   },
   {
     id: 6,
@@ -43,21 +44,21 @@ const items = [
   },
   {
     id: 7,
+    title: "Tainted Love",
+    image: "/image/Tainted Love clip.webp",
+    video: "/video/Tainted Love clip.mp4",
+  },
+  {
+    id: 8,
     title: "Parlo miro",
     image: "/image/Parlo miro clip.webp",
     video: "/video/Parlo Miro clip.mp4",
   },
   {
-    id: 8,
-    title: "Summer",
-    image: "/image/Summer clip.webp",
-    video: "/video/Summer clip.mp4",
-  },
-  {
     id: 9,
-    title: "Tainted Love",
-    image: "/image/Tainted Love clip.webp",
-    video: "/video/Tainted Love clip.mp4",
+    title: "All I want for Christmas",
+    image: "/image/All I want for Christmas clip.webp",
+    video: "/video/All I want for Christmas clip.mp4",
   },
   {
     id: 10,
@@ -79,9 +80,9 @@ const items = [
   },
   {
     id: 13,
-    title: "Moonlight",
-    image: "/image/Moonlight.webp",
-    video: "/video/Moonlight.mp4",
+    title: "Summer",
+    image: "/image/Summer clip.webp",
+    video: "/video/Summer clip.mp4",
   },
 ];
 
