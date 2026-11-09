@@ -15,7 +15,7 @@ npm run lint    # eslint (flat config, eslint-config-next core-web-vitals + type
 
 There is no test framework in this project — verify changes by running the dev server and looking at the page.
 
-`npm run lint` is **not clean on `main`**: it reports about 10 errors, mostly `react-hooks/set-state-in-effect` and `react-hooks/refs` from the React-Compiler-era rules in eslint-config-next 16. Six of them come from the `useEffect(() => setMounted(true))` portal guard described under Conventions. Judge a change by whether it adds new problems, not by the exit code. For new client-only state, the `useSyncExternalStore` approach in `useRevealArmed.ts` passes these rules.
+`npm run lint` is **not clean on `main`**: it reports about 10 errors, mostly `react-hooks/set-state-in-effect` and `react-hooks/refs` from the React-Compiler-era rules in eslint-config-next 16. Six of them are setState-on-mount calls: the `useEffect(() => setMounted(true))` portal guard described under Conventions (About, Format, Gallery, VideoModal), CustomVideoPlayer's identical `setHasMounted`, and Loading's initial `setDimension`. Judge a change by whether it adds new problems, not by the exit code. For new client-only state, the `useSyncExternalStore` approach in `useRevealArmed.ts` passes these rules.
 
 ## What this is
 
@@ -38,6 +38,17 @@ A single-page marketing/portfolio site for the musician SHAHOVA. Next.js 16 App 
 
 - [Carousel.tsx](src/components/Carousel.tsx) (Hero): a hand-rolled infinite marquee. Four copies of the item set are rendered; a `requestAnimationFrame` loop mutates `trackRef.current.style.transform` directly and wraps `offsetRef` between `setWidth` and `setWidth * 2`. All animation state lives in refs — deliberately, so the loop never triggers a React render. Pointer drag sets `hasDraggedRef` to suppress the click that would otherwise open a video. The curved top/bottom edges come from a `clipPath: path(...)` string recomputed by a `ResizeObserver`; the ellipse math (`sqrt(5)/3`) is what keeps the arc from clipping the cards.
 - [Music.tsx](src/components/Music.tsx): a framer-motion 3D coverflow driven by `activeIndex` from the audio context — a normal React render, no refs.
+
+**Format has two layouts.** On `lg` and up, [Format.tsx](src/components/Format.tsx) shows the list beside a stack of photos (the selected one on top). Below `lg` the stack is hidden and each row opens its own photo beneath it, like an accordion. Picking a row collapses the photo above it, which would drag the new row under the header. `followSelection()` corrects for that by nudging the scroll on every framer-motion `postRender` until the layout settles. Because of that, the list has `[overflow-anchor:none]`, and the code calls `scrollBy` with `behavior: "instant"`: `<html>` has `scroll-behavior: smooth`, and a smooth scroll would lag behind the resize. The JS checks the breakpoint through `DESKTOP_QUERY`, which must match Tailwind's `lg`.
+
+**Format plays video over those photos.** One `<video>` ([FormatVideo.tsx](src/components/FormatVideo.tsx)) sits on top of the selected format's photo and plays the four clips in order, looping, for as long as the section is "active": overlapping the middle of the viewport, after the loading screen (`useRevealArmed`), in a visible tab, with the MORE popup closed. It starts muted; controls show on hover (desktop) or tap (touch). The parts that aren't obvious:
+
+- It is a single element that is physically moved, not one per format. Format.tsx owns a detached `videoHost` div, appends it into the current `data-video-slot` element in a layout effect, and portals FormatVideo into it so it never unmounts. Safari only allows sound on an element the viewer unmuted by hand, so a fresh element per clip would go silent at every clip change. Don't `key` it by format or render a second one.
+- Both layouts are always in the DOM (CSS hides one), each with its own slots. The video isn't rendered until `useMediaQuery` knows which layout is showing, otherwise the hidden one would download and play a copy.
+- One sound at a time, across three sources. Unmuting the clip calls `pauseMusic()`; a capture-phase `play` listener mutes the clip again when the music player or the video modal starts.
+- When a clip ends in the stacked layout, the next row is scrolled into view with `followSelection()` only if the viewer was watching (the video was at least half on screen). Otherwise the page is left alone.
+- The stack behind the front card is in play order (next clip directly behind), derived from `selectedIndex`.
+- Clips live in `public/video/format/` and are re-encoded for inline autoplay (720×1280, about 2 Mbps, `moov` atom first). Camera originals run about 13 Mbps and should not be referenced directly. To add or replace one: `ffmpeg -i in.mp4 -vf scale=720:-2 -r 30 -c:v libx264 -preset slow -crf 23 -pix_fmt yuv420p -c:a aac -b:a 128k -map_metadata -1 -movflags +faststart out.mp4`. The photos stay as each clip's poster and as the cards behind the front one.
 
 **`swiper` is a leftover dependency.** Nothing imports it; only two orphan `.swiper-slide` rules remain in [globals.css](src/app/globals.css#L45-L51). Don't reach for it when building a new carousel.
 

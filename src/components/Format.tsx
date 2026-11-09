@@ -1,10 +1,15 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence, frame, cancelFrame } from "framer-motion";
 import Reveal from "./Reveal";
+import FormatVideo from "./FormatVideo";
+import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { usePageVisible } from "@/hooks/usePageVisible";
+import { useRevealArmed } from "@/hooks/useRevealArmed";
 
 /**
  * Below `lg` the list and the photo can't sit side by side, so instead of the
@@ -22,7 +27,8 @@ const PANEL_TRANSITION = {
 const DESKTOP_QUERY = "(min-width: 64rem)";
 
 /** The fixed header is `h-16`; a selected row should settle clear of it. */
-const HEADER_CLEARANCE = 64 + 16;
+const HEADER_HEIGHT = 64;
+const HEADER_CLEARANCE = HEADER_HEIGHT + 16;
 
 /** Breathing room between an opened photo and the bottom of the viewport. */
 const BOTTOM_GAP = 16;
@@ -78,12 +84,56 @@ function followSelection(item: HTMLElement): () => void {
     cancelFrame(step);
     window.removeEventListener("wheel", stop);
     window.removeEventListener("touchstart", stop);
+    window.removeEventListener("touchmove", stop);
   };
 
   frame.postRender(step, true);
   window.addEventListener("wheel", stop, { passive: true });
   window.addEventListener("touchstart", stop, { passive: true });
+  // touchmove as well: when the sequence moves on by itself, a finger may
+  // already be down and dragging.
+  window.addEventListener("touchmove", stop, { passive: true });
   return stop;
+}
+
+/**
+ * The section counts as active while it overlaps the middle half of the
+ * viewport. Measured against the viewport rather than as a share of the
+ * section, so it means the same thing on a phone, where the list is taller
+ * than the screen, as on a desktop.
+ */
+const ACTIVE_BAND = "-25% 0px -25% 0px";
+
+/** Whether at least half of an element is on screen, below the header. */
+function isMostlyOnScreen(el: HTMLElement) {
+  const { top, bottom, height } = el.getBoundingClientRect();
+  if (height === 0) return false;
+  const visible =
+    Math.min(bottom, window.innerHeight) - Math.max(top, HEADER_HEIGHT);
+  return visible >= height / 2;
+}
+
+/**
+ * The box the section's single <video> lives in (see the note in Format). It
+ * is created outside React's tree so it can be carried from one photo to
+ * another without the element inside being torn down.
+ */
+function createVideoHost() {
+  if (typeof document === "undefined") return null;
+  const host = document.createElement("div");
+  host.className = "absolute inset-0";
+  return host;
+}
+
+function moveInto(host: HTMLElement, slot: HTMLElement) {
+  if (host.parentElement === slot) return;
+
+  const video = host.querySelector("video");
+  const wasPlaying = !!video && !video.paused;
+  slot.appendChild(host);
+  // Chrome pauses a media element the moment it leaves the document, even
+  // when it is put straight back.
+  if (wasPlaying) video.play().catch(() => {});
 }
 
 const FORMATS = [
@@ -93,6 +143,7 @@ const FORMATS = [
     subtitle: "One Voice",
     thumbnail: "/image/Solo.webp",
     mainImage: "/image/Solo.webp",
+    video: "/video/format/SOLO.mp4",
     details: (
       <>
         <p className="text-red-600 uppercase tracking-widest text-sm font-semibold mb-2">
@@ -147,6 +198,7 @@ const FORMATS = [
     subtitle: "Vocals & Violin",
     thumbnail: "/image/Duo.webp",
     mainImage: "/image/Duo.webp",
+    video: "/video/format/DUO.mp4",
     details: (
       <>
         <p className="text-red-600 uppercase tracking-widest text-sm font-semibold mb-2">
@@ -188,6 +240,7 @@ const FORMATS = [
     subtitle: "Vocals & Percussion",
     thumbnail: "/image/Trio.webp",
     mainImage: "/image/Trio.webp",
+    video: "/video/format/TRIO.mp4",
     details: (
       <>
         <p className="text-red-600 uppercase tracking-widest text-sm font-semibold mb-2">
@@ -225,6 +278,7 @@ const FORMATS = [
     subtitle: "Grand Performance",
     thumbnail: "/image/Full BandF.webp",
     mainImage: "/image/Full BandF.webp",
+    video: "/video/format/FULL BAND.mp4",
     details: (
       <>
         <p className="text-red-600 uppercase tracking-widest text-sm font-semibold mb-2">
@@ -275,12 +329,9 @@ const FORMATS = [
 ];
 
 export default function Format() {
-  const [stackOrder, setStackOrder] = useState([
-    "solo",
-    "duo",
-    "trio",
-    "full-band",
-  ]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const selected = FORMATS[selectedIndex];
+
   const [activePopup, setActivePopup] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
@@ -308,23 +359,84 @@ export default function Format() {
     };
   }, [activePopup]);
 
+  /*
+    Video. Every format still renders its photo; one <video> is laid over the
+    selected format's photo and plays the clips in order — Solo, Duo, Trio,
+    Full Band, then round again — for as long as the section is active.
+
+    It is deliberately a single element that gets moved, not one per format.
+    Browsers (Safari above all) only let sound start from a tap, and they
+    remember that per element: once the viewer has unmuted this one it may
+    carry its sound into the next clip, where a freshly mounted element would
+    be forced back to silence. So `videoHost`, a plain DOM box outside React's
+    tree, is appended into whichever photo's slot is current, and FormatVideo
+    is portalled into it, where it never unmounts.
+  */
+  const sectionRef = useRef<HTMLElement>(null);
+  const isDesktop = useMediaQuery(DESKTOP_QUERY);
+  const [videoHost] = useState(createVideoHost);
+
+  // Both layouts are always in the DOM, one of them hidden by CSS, so each has
+  // its own slots (`data-video-slot`) and the layout is part of the key.
+  const slotKey =
+    isDesktop === null
+      ? null
+      : `${isDesktop ? "side" : "stacked"}:${selected.id}`;
+
+  // No dependency list on purpose. It is one lookup, and re-checking after
+  // every render means a panel framer-motion swaps out mid-animation can never
+  // leave the video stranded in a slot that is on its way out.
+  useLayoutEffect(() => {
+    if (!videoHost || !slotKey) return;
+    const slot = sectionRef.current?.querySelector<HTMLElement>(
+      `[data-video-slot="${slotKey}"]`,
+    );
+    if (slot) moveInto(videoHost, slot);
+  });
+
+  // "Active": on screen, once the loading screen has lifted (the same gate the
+  // scroll reveals use), in a visible tab, and not behind the MORE popup.
+  const contentRef = useRef<HTMLDivElement>(null);
+  const entry = useIntersectionObserver(contentRef, { rootMargin: ACTIVE_BAND });
+  const introDone = useRevealArmed();
+  const pageVisible = usePageVisible();
+  const active =
+    introDone && pageVisible && !!entry?.isIntersecting && !activePopup;
+
+  const [paused, setPaused] = useState(false);
+
   const stopFollowRef = useRef<(() => void) | null>(null);
 
-  const handleSelect = (id: string, item: HTMLElement) => {
-    setStackOrder((prev) => {
-      const newStack = prev.filter((item) => item !== id);
-      newStack.unshift(id); // Move selected to the front
-      return newStack;
-    });
+  const show = (index: number, follow: boolean) => {
+    setSelectedIndex(index);
 
     // The inline photos only exist in the stacked layout.
-    if (window.matchMedia(DESKTOP_QUERY).matches) return;
+    if (!follow || isDesktop !== false) return;
+    const row = sectionRef.current?.querySelector<HTMLElement>(
+      `[data-format="${FORMATS[index].id}"]`,
+    );
+    if (!row) return;
     stopFollowRef.current?.();
-    stopFollowRef.current = followSelection(item);
+    stopFollowRef.current = followSelection(row);
+  };
+
+  const handleSelect = (index: number) => {
+    // Picking a format is also asking to watch it.
+    setPaused(false);
+    show(index, true);
+  };
+
+  const handleEnded = () => {
+    // In the stacked layout the open clip sits one row lower each time. Keep
+    // it in view for someone who is watching it, but never scroll the page
+    // under a reader whose attention is somewhere else.
+    const watching = !!videoHost && isMostlyOnScreen(videoHost);
+    show((selectedIndex + 1) % FORMATS.length, watching);
   };
 
   return (
     <section
+      ref={sectionRef}
       id="format"
       className="relative w-full z-10 py-24 px-8 max-w-[1440px] mx-auto flex flex-col mb-20"
     >
@@ -346,21 +458,23 @@ export default function Format() {
       </Reveal>
 
       {/* Content Columns */}
-      <div className="flex flex-col lg:flex-row gap-20 lg:gap-32 items-center lg:items-stretch w-full">
+      <div
+        ref={contentRef}
+        className="flex flex-col lg:flex-row gap-20 lg:gap-32 items-center lg:items-stretch w-full"
+      >
         {/* Left Column - List.
             overflow-anchor is off so Chrome's scroll anchoring doesn't also
             shift the page while the photos resize — followSelection owns that,
             and this keeps Chrome and Safari behaving the same. */}
         <div className="w-full lg:w-[35%] flex flex-col gap-4 [overflow-anchor:none]">
-          {FORMATS.map((format) => {
-            const isSelected = stackOrder[0] === format.id;
+          {FORMATS.map((format, index) => {
+            const isSelected = index === selectedIndex;
 
             return (
               <div
                 key={format.id}
-                onClick={(e) =>
-                  !isSelected && handleSelect(format.id, e.currentTarget)
-                }
+                data-format={format.id}
+                onClick={() => !isSelected && handleSelect(index)}
                 className={`transition-all duration-300 border-2 ${
                   isSelected
                     ? "border-red-600 bg-red-600/5 cursor-default"
@@ -411,7 +525,7 @@ export default function Format() {
                   </div>
                 </div>
 
-                {/* Inline photo — stacked layout only (see PANEL_MS) */}
+                {/* Inline photo and video slot — stacked layout only (see PANEL_MS) */}
                 <AnimatePresence initial={false}>
                   {isSelected && (
                     <motion.div
@@ -431,6 +545,10 @@ export default function Format() {
                             sizes="100vw"
                             className="object-cover object-[center_30%]"
                           />
+                          <div
+                            data-video-slot={`stacked:${format.id}`}
+                            className="absolute inset-0"
+                          />
                         </div>
                       </div>
                     </motion.div>
@@ -443,8 +561,10 @@ export default function Format() {
 
         {/* Right Column - Image Stack (side-by-side layout only) */}
         <div className="relative hidden lg:block lg:w-[55%] flex-shrink-0 pr-12">
-          {FORMATS.map((format) => {
-            const index = stackOrder.indexOf(format.id);
+          {FORMATS.map((format, i) => {
+            // Queue order: whatever plays next sits directly behind the front.
+            const index =
+              (i - selectedIndex + FORMATS.length) % FORMATS.length;
             const isFront = index === 0;
 
             return (
@@ -472,11 +592,31 @@ export default function Format() {
                   sizes="55vw"
                   className="object-cover"
                 />
+                <div
+                  data-video-slot={`side:${format.id}`}
+                  className="absolute inset-0"
+                />
               </motion.div>
             );
           })}
         </div>
       </div>
+
+      {/* The one video, carried between the slots above. Not rendered until the
+          layout is known, so the hidden layout never loads or plays a copy. */}
+      {videoHost &&
+        isDesktop !== null &&
+        createPortal(
+          <FormatVideo
+            src={selected.video}
+            label={selected.title}
+            active={active}
+            paused={paused}
+            onPausedChange={setPaused}
+            onEnded={handleEnded}
+          />,
+          videoHost,
+        )}
 
       {/* Modal Popup */}
       {mounted &&
