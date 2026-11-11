@@ -1,53 +1,95 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
 import { useRevealArmed } from "@/hooks/useRevealArmed";
 
 /**
- * Scroll reveal, modelled on Webflow's `slideInBottom` preset as used on
- * dg-cinema.com: the element rises 100px into place while fading in, over
- * one second on an outQuart curve.
+ * Scroll reveal: a block stays invisible until it scrolls into view, then rises
+ * into place while fading in — once per page load.
+ *
+ * This file decides *when*. *How it looks* (distance, duration, easing) is the
+ * `[data-reveal]` CSS in globals.css. The motion is a CSS animation rather than
+ * a JS-driven one so it runs on the compositor: the page also runs the star
+ * canvas, the hero marquee and video on the main thread, and an animation
+ * sharing that thread drops frames exactly when a lot is revealing at once.
  */
-
-// outQuart — the curve Webflow applies to the preset.
-const OUT_QUART: [number, number, number, number] = [0.165, 0.84, 0.44, 1];
-
-// How far the element travels before settling.
-const DISTANCE = 100;
-
-const DURATION = 1;
 
 /**
- * Trip the reveal once the element has cleared 30% of the viewport height from
- * the bottom edge — Webflow's `scrollOffsetValue: 30%`.
+ * A block reveals once its top edge is this far above the bottom of the
+ * viewport. Enough that the motion plays where the reader is looking, not so
+ * much that a block sits on screen invisible.
  */
-const ROOT_MARGIN = "0px 0px -30% 0px";
+const TRIGGER_MARGIN = "0px 0px -10% 0px";
 
-const VARIANTS = {
-  hidden: { opacity: 0, y: DISTANCE },
-  shown: { opacity: 1, y: 0 },
-};
+/**
+ * Blocks that cross the line in the same frame — a row of gallery tiles, or a
+ * whole screenful after a reload — follow each other in reading order instead
+ * of moving as one slab. The cap keeps the last of a large batch from waiting.
+ */
+const STAGGER_MS = 70;
+const MAX_STAGGER_MS = 420;
 
-interface RevealProps {
-  children: React.ReactNode;
-  /** Passed straight through, so a Reveal can replace an existing wrapper div. */
-  className?: string;
-  /**
-   * Seconds to hold before rising. Each Reveal watches itself, so elements
-   * stacked vertically already cascade; a small delay makes the order
-   * deterministic when several cross the trigger line in the same frame.
-   */
-  delay?: number;
+type OnReveal = (delayMs: number) => void;
+
+// One observer for every Reveal on the page. Besides being cheaper than one
+// each, it is what makes the stagger possible: a shared observer reports all
+// the blocks that crossed in a frame in a single callback.
+const waiting = new Map<Element, OnReveal>();
+let observer: IntersectionObserver | null = null;
+
+function inReadingOrder(
+  a: IntersectionObserverEntry,
+  b: IntersectionObserverEntry,
+) {
+  const rowA = Math.round(a.boundingClientRect.top);
+  const rowB = Math.round(b.boundingClientRect.top);
+  return rowA - rowB || a.boundingClientRect.left - b.boundingClientRect.left;
 }
 
-export default function Reveal({ children, className, delay = 0 }: RevealProps) {
+function handleEntries(entries: IntersectionObserverEntry[]) {
+  entries
+    .filter((entry) => entry.isIntersecting)
+    .sort(inReadingOrder)
+    .forEach(({ target }, i) => {
+      const onReveal = waiting.get(target);
+      unwatch(target);
+      onReveal?.(Math.min(i * STAGGER_MS, MAX_STAGGER_MS));
+    });
+}
+
+function watch(node: Element, onReveal: OnReveal) {
+  observer ??= new IntersectionObserver(handleEntries, {
+    rootMargin: TRIGGER_MARGIN,
+  });
+  waiting.set(node, onReveal);
+  observer.observe(node);
+}
+
+function unwatch(node: Element) {
+  waiting.delete(node);
+  observer?.unobserve(node);
+}
+
+/**
+ * Renders a `div` and passes every prop through, so a Reveal can stand in for
+ * an existing wrapper — classes, click handlers and all — instead of adding a
+ * layer around it.
+ *
+ * Don't put it on an element that carries its own `transition-all`, opacity or
+ * transform; wrap that element instead.
+ */
+export default function Reveal({
+  children,
+  style,
+  ...rest
+}: React.ComponentPropsWithoutRef<"div">) {
   // Held back until the intro is over, so a reveal is never spent behind the
   // loading screen or on a restored scroll position the reader never chose.
   const armed = useRevealArmed();
 
   const ref = useRef<HTMLDivElement>(null);
-  const [revealed, setRevealed] = useState(false);
+  // null until the block is revealed, then the stagger delay it was given.
+  const [delayMs, setDelayMs] = useState<number | null>(null);
 
   /**
    * Should anything be running without IntersectionObserver, show the content
@@ -56,53 +98,44 @@ export default function Reveal({ children, className, delay = 0 }: RevealProps) 
    */
   const canObserve =
     typeof IntersectionObserver !== "undefined" || typeof window === "undefined";
-  const shown = revealed || (armed && !canObserve);
+  const revealed = delayMs !== null || (armed && !canObserve);
 
   /**
    * The observer is ours rather than framer-motion's `whileInView`. Gating that
-   * prop kept revealing the element early regardless of the gate, and a reveal
-   * that fires when it should not is the whole bug being avoided here. Owning
-   * the observer makes the rule exact: nothing is watched before the reveal is
-   * armed, and `shown` latches, so each element rises once per page load and
-   * scrolling back over it does nothing.
+   * prop kept revealing the element early regardless of the gate. Here nothing
+   * is watched before the reveal is armed, and a revealed block is never
+   * watched again, so each one plays once per page load and scrolling back
+   * over it does nothing.
+   *
+   * A waiting block has no transform (it is only transparent), so the observer
+   * measures it where it will actually sit, not where the animation starts.
    */
   useEffect(() => {
-    if (!armed || shown) return;
+    if (!armed || revealed) return;
 
     const node = ref.current;
-    if (!node || !canObserve) return;
+    if (!node) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setRevealed(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: ROOT_MARGIN },
-    );
-
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [armed, shown, canObserve]);
+    watch(node, setDelayMs);
+    return () => unwatch(node);
+  }, [armed, revealed]);
 
   return (
-    // `data-reveal` is the hook globals.css uses to pin this element to its
-    // settled state under `prefers-reduced-motion`. Handling that in CSS rather
-    // than by branching on framer-motion's `useReducedMotion()` is deliberate:
-    // that hook always reads `false` during SSR, so branching would render a
-    // different tree on the server than on the client. CSS applies before any
-    // JS runs and needs no hydration to be correct.
-    <motion.div
+    <div
+      {...rest}
       ref={ref}
-      data-reveal
-      className={className}
-      variants={VARIANTS}
-      initial="hidden"
-      animate={shown ? "shown" : "hidden"}
-      transition={{ duration: DURATION, ease: OUT_QUART, delay }}
+      // globals.css keys the hidden state and the animation off this. It also
+      // pins the settled state under `prefers-reduced-motion` there, in CSS
+      // rather than by branching in JS, so server and client render the same
+      // tree.
+      data-reveal={revealed ? "in" : "pending"}
+      style={
+        delayMs
+          ? ({ ...style, "--reveal-delay": `${delayMs}ms` } as React.CSSProperties)
+          : style
+      }
     >
       {children}
-    </motion.div>
+    </div>
   );
 }

@@ -11,19 +11,22 @@ npm run dev     # dev server on :3000
 npm run build   # production build
 npm run start   # serve the production build
 npm run lint    # eslint (flat config, eslint-config-next core-web-vitals + typescript)
+npx tsc --noEmit  # type check only; clean on main
 ```
 
 There is no test framework in this project — verify changes by running the dev server and looking at the page.
 
-`npm run lint` is **not clean on `main`**: it reports about 10 errors, mostly `react-hooks/set-state-in-effect` and `react-hooks/refs` from the React-Compiler-era rules in eslint-config-next 16. Six of them are setState-on-mount calls: the `useEffect(() => setMounted(true))` portal guard described under Conventions (About, Format, Gallery, VideoModal), CustomVideoPlayer's identical `setHasMounted`, and Loading's initial `setDimension`. Judge a change by whether it adds new problems, not by the exit code. For new client-only state, the `useSyncExternalStore` approach in `useRevealArmed.ts` passes these rules.
+`npm run lint` is **not clean on `main`**: it reports 10 errors (plus about a dozen warnings, mostly unused variables), nearly all from the React-Compiler-era rules in eslint-config-next 16. Six are setState-on-mount calls (`react-hooks/set-state-in-effect`): the `useEffect(() => setMounted(true))` portal guard described under Conventions (About, Format, Gallery, VideoModal), CustomVideoPlayer's identical `setHasMounted`, and Loading's initial `setDimension`. The other four: `setHasActivePlayback` inside an effect in AudioPlayerContext, two `react-hooks/refs` hits on the `elementRef.current` dependency in `useIntersectionObserver.ts`, and one `no-explicit-any` in Carousel. Judge a change by whether it adds new problems, not by the exit code. For new client-only state, the `useSyncExternalStore` approach in `useRevealArmed.ts` passes these rules.
+
+**The dev server can serve a stale `globals.css`.** Seen on 2026-11-11 with Next 16.2.9 (Turbopack): edits to [globals.css](src/app/globals.css) were not picked up while `npm run dev` was running, and the old stylesheet was still served after a restart, until `.next/dev/cache/turbopack` was deleted. Edits to `.tsx` files reloaded normally and `npm run build` was not affected. If a CSS change doesn't show up, stop the dev server, delete that folder and start it again.
 
 ## What this is
 
-A single-page marketing/portfolio site for the musician SHAHOVA. Next.js 16 App Router, React 19, Tailwind v4, framer-motion. Everything is static: no API routes, no database, no env vars, no data fetching. All content is hardcoded in component-local arrays and `src/constants/`; all media lives in `public/`.
+A single-page marketing/portfolio site for the musician SHAHOVA. Next.js 16 App Router, React 19, Tailwind v4, framer-motion. Everything is static: no API routes, no database, no env vars, no data fetching. All content is hardcoded in component-local arrays and `src/constants/`; all media lives in `public/` and is committed to git. That folder is about 620 MB, nearly all of it `public/video/`, where the modal clips run up to 90 MB each.
 
 ## Architecture
 
-**One page, stacked sections.** [src/app/page.tsx](src/app/page.tsx) composes every section in order (Loading → Header → Hero → About → Format → Music → Live → Experience → Gallery → Contact → Footer → StickyPlayer). Adding a section means adding a component here plus an entry in the nav array in [Header.tsx:34-41](src/components/Header.tsx#L34-L41) — the header scrolls by `document.getElementById(id)`, so the section's `id` must match.
+**One page, stacked sections.** [src/app/page.tsx](src/app/page.tsx) composes every section in order (Loading → Header → Hero → About → Format → Music → Live → Experience → Gallery → Contact → Footer → StickyPlayer). Adding a section means adding a component here plus an entry in the nav array in [Header.tsx:34-41](src/components/Header.tsx#L34-L41) — the header scrolls by `document.getElementById(id)`, so the section's `id` must match. It scrolls to the section's top edge with `window.scrollTo`, which ignores the `scroll-margin-top` rule in globals.css, so each section clears the fixed 64px header with its own top padding (`py-24`).
 
 **Audio is global, not per-section.** [AudioPlayerContext](src/context/AudioPlayerContext.tsx) is mounted in [layout.tsx](src/app/layout.tsx) and owns the single `<audio>` element for the whole app, plus playback state (`activeIndex`, `isPlaying`, `progress`, `duration`). Two UIs consume it:
 
@@ -50,17 +53,22 @@ A single-page marketing/portfolio site for the musician SHAHOVA. Next.js 16 App 
 - The stack behind the front card is in play order (next clip directly behind), derived from `selectedIndex`.
 - Clips live in `public/video/format/` and are re-encoded for inline autoplay (720×1280, about 2 Mbps, `moov` atom first). Camera originals run about 13 Mbps and should not be referenced directly. To add or replace one: `ffmpeg -i in.mp4 -vf scale=720:-2 -r 30 -c:v libx264 -preset slow -crf 23 -pix_fmt yuv420p -c:a aac -b:a 128k -map_metadata -1 -movflags +faststart out.mp4`. The photos stay as each clip's poster and as the cards behind the front one.
 
-**`swiper` is a leftover dependency.** Nothing imports it; only two orphan `.swiper-slide` rules remain in [globals.css](src/app/globals.css#L45-L51). Don't reach for it when building a new carousel.
+**`swiper` is a leftover dependency.** Nothing imports it; only two orphan `.swiper-slide` rules remain in [globals.css](src/app/globals.css#L94-L100). Don't reach for it when building a new carousel.
 
 **Stars background.** [StarsBackground.tsx](src/components/StarsBackground.tsx) wraps the entire page and paints 1200 stars onto a fixed full-viewport `<canvas>` in its own rAF loop with mouse parallax. It is deliberately canvas-based (a previous framer-motion version had memory-use problems, see `c95cfa0`). It is also mounted a *second* time inside [Loading.tsx](src/components/Loading.tsx) with `className="bg-transparent min-h-0"` — changing its root classes affects both.
 
-**Loading screen** is a self-contained overlay at `z-[99999]` that runs a fixed ~4.6s word sequence, then slides up behind an animated SVG curve. It renders a solid black div while `dimension.width === 0` (SSR/pre-hydration) to prevent the page flashing through — regressions here have been fixed twice (`df86f38`, `1875c09`). Its timing is mirrored by hand in `INTRO_MS` (see below); change both together.
+**Loading screen** is a self-contained overlay at `z-[99999]` that runs a fixed ~4.6s word sequence, then slides up behind an animated SVG curve. It renders a solid black div while `dimension.width === 0` (SSR/pre-hydration) to prevent the page flashing through — regressions here have been fixed twice (`df86f38`, `1875c09`). Its timing is mirrored by hand in `INTRO_MS` (see below); change both together. Its portrait (`/image/artist.webp`) is preloaded by a `<link rel="preload">` in [layout.tsx](src/app/layout.tsx); if the image changes, change that link too.
 
-**Scroll reveals.** Section headings (every section except Hero) are wrapped in [Reveal.tsx](src/components/Reveal.tsx), usually as a heading `<Reveal>` plus a subheading `<Reveal delay={0.08}>`. Each one rises 100px and fades in once per page load. The parts that aren't obvious:
+**Scroll reveals.** Everything in About, Format, Music, Live, Experience, Gallery and Contact (label, heading and each block of content) is wrapped in [Reveal.tsx](src/components/Reveal.tsx): invisible until it scrolls into view, then it rises 64px and fades in, once per page load. Hero, Header and Footer are not revealed. The parts that aren't obvious:
 
+- There is one Reveal per block a reader takes in at once (a paragraph, a grid tile, a list row, the Music coverflow), not one per section. Content added to these sections needs its own Reveal, or it will sit there fully visible while its neighbours animate in.
+- Reveal renders a `div` and passes every prop through, so it normally replaces an existing wrapper (`<Reveal className=… onClick=…>`) rather than adding a layer. Wrap instead when the element has its own `transition-all`, opacity or transform, as Format's rows do.
+- When a block reveals is decided in Reveal.tsx: one shared `IntersectionObserver` fires once the block's top edge is 10% of the viewport height above the bottom of the screen, and blocks that cross in the same frame are staggered 70ms apart in reading order. How it looks is the `[data-reveal]` CSS in [globals.css](src/app/globals.css#L32-L92) (`--reveal-rise`, durations, easing).
+- The motion is a CSS animation on purpose, so it runs on the compositor. The star canvas, the hero marquee and video already keep the main thread busy, and a JS-driven animation (framer-motion's `y`) dropped frames when many blocks revealed at once. Don't move it back.
+- A waiting block is transparent but not shifted, so it holds its place in the layout and the observer measures where it will really sit. The animation fills `backwards` only: once it ends the block is back on its plain styles, with no leftover stacking context or containing block.
 - Reveals stay disarmed until the loading screen is gone, via [useRevealArmed.ts](src/hooks/useRevealArmed.ts): a module-level `useSyncExternalStore` flag with a single shared timer that arms at `INTRO_MS = 5400`, measured from `performance.now()`. That number is hard-coded from Loading.tsx's sequence (3 words × 1200ms + 1000ms hold + 800ms slide). Without the gate, reveals fire behind the overlay, or straight away on a reload that restores the scroll position.
 - Reveal runs its own `IntersectionObserver` instead of framer-motion's `whileInView`, which kept firing early despite the gate. Don't switch it back.
-- Reduced motion is handled in CSS (the `[data-reveal]` rule in [globals.css](src/app/globals.css#L38-L43)), not with `useReducedMotion()`. That hook reads `false` during SSR and would cause a hydration mismatch.
+- Reduced motion is handled in the same CSS, not with `useReducedMotion()`. That hook reads `false` during SSR and would cause a hydration mismatch.
 
 ## Conventions
 
@@ -74,3 +82,5 @@ A single-page marketing/portfolio site for the musician SHAHOVA. Next.js 16 App 
 ## Loose ends
 
 `src/app/test.tsx` and `test-aspect.html` are scratch files from working out video modal sizing. They are not routed or imported and can be ignored.
+
+`README.md` is the untouched create-next-app template and says nothing about this project. Its note about the Geist font is misleading: layout.tsx loads Geist as CSS variables, but `body` in globals.css is set to Arial.

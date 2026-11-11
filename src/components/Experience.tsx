@@ -16,7 +16,7 @@ export default function Experience() {
       </Reveal>
 
       {/* Heading */}
-      <Reveal className="mb-12 md:mb-24" delay={0.08}>
+      <Reveal className="mb-12 md:mb-24">
         <h2
           className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black leading-[0.85] tracking-tighter uppercase"
           style={{ textShadow: "0px 0px 40px rgba(255,255,255,0.4)" }}
@@ -28,7 +28,7 @@ export default function Experience() {
       {/* Content Columns */}
       <div className="flex flex-col lg:flex-row gap-20 lg:gap-32 items-center lg:items-stretch w-full">
         {/* Left Column - Image Stack */}
-        <div className="relative w-full md:w-[80%] lg:w-[55%] flex-shrink-0 flex flex-col">
+        <Reveal className="relative w-full md:w-[80%] lg:w-[55%] flex-shrink-0 flex flex-col">
           {/* Third Layer */}
           <div className="absolute top-0 bottom-0 w-full translate-x-[32px] z-0 overflow-hidden border-l-[4px] border-black">
             <Image
@@ -61,12 +61,12 @@ export default function Experience() {
               className="object-cover"
             />
           </div>
-        </div>
+        </Reveal>
 
         {/* Right Column - List */}
         <div className="w-full lg:w-[45%] flex flex-col justify-center gap-14 mt-8 lg:mt-0 py-4">
           {/* Item 1 */}
-          <div className="flex flex-col gap-2">
+          <Reveal className="flex flex-col gap-2">
             <span className="text-red-600 font-black tracking-widest text-lg mb-1">
               01
             </span>
@@ -76,10 +76,10 @@ export default function Experience() {
             <p className="text-sm md:text-base text-gray-400 leading-snug">
               Elegant performances for unforgettable celebrations
             </p>
-          </div>
+          </Reveal>
 
           {/* Item 2 */}
-          <div className="flex flex-col gap-2">
+          <Reveal className="flex flex-col gap-2">
             <span className="text-red-600 font-black tracking-widest text-lg mb-1">
               02
             </span>
@@ -89,10 +89,10 @@ export default function Experience() {
             <p className="text-sm md:text-base text-gray-400 leading-snug">
               Solo, Duo, Trio or Full Live Band
             </p>
-          </div>
+          </Reveal>
 
           {/* Item 3 */}
-          <div className="flex flex-col gap-2">
+          <Reveal className="flex flex-col gap-2">
             <span className="text-red-600 font-black tracking-widest text-lg mb-1">
               03
             </span>
@@ -102,7 +102,7 @@ export default function Experience() {
             <p className="text-sm md:text-base text-gray-400 leading-snug">
               Exceptional vocals, premium sound and an engaging stage presence
             </p>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>

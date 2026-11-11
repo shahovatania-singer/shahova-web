@@ -30,15 +30,64 @@ section[id] {
 }
 
 /*
-  Scroll reveal (see components/Reveal.tsx). Readers who ask for reduced motion
-  get the settled state instead of the rise — pinned here rather than in JS so it
-  holds during SSR, before hydration, and with JavaScript disabled. `!important`
-  is what lets it win over the inline styles framer-motion writes.
+  Scroll reveal. components/Reveal.tsx decides when a block reveals and flips
+  `data-reveal` from "pending" to "in"; everything about how it looks is here.
+
+  A pending block is only transparent — it is not moved — so it keeps its place
+  in the layout and the observer measures where it will really sit.
+
+  Both animations fill `backwards` only: that holds the hidden state through the
+  stagger delay, and once they finish the block is back on its plain styles. A
+  `forwards` fill would leave every revealed block permanently promoted to its
+  own layer, stacking context and containing block.
+
+  Only `from` is given, so each block lands on whatever opacity and transform
+  its own classes ask for.
 */
+:root {
+  --reveal-rise: 64px;
+}
+
+[data-reveal="pending"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Tabbing into a block that hasn't scrolled far enough to reveal shows it. */
+[data-reveal="pending"]:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* The fade finishes before the rise does, so the block is already solid for
+   the slow last part of the movement instead of ghosting into place. */
+[data-reveal="in"] {
+  animation:
+    reveal-fade 700ms cubic-bezier(0.33, 1, 0.68, 1) var(--reveal-delay, 0ms)
+      backwards,
+    reveal-rise 1000ms cubic-bezier(0.165, 0.84, 0.44, 1)
+      var(--reveal-delay, 0ms) backwards;
+}
+
+@keyframes reveal-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes reveal-rise {
+  from {
+    transform: translate3d(0, var(--reveal-rise), 0);
+  }
+}
+
+/* Readers who ask for reduced motion get everything in place from the start.
+   In CSS rather than JS so it holds during SSR and before hydration. */
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] {
     opacity: 1 !important;
-    transform: none !important;
+    pointer-events: auto !important;
+    animation: none !important;
   }
 }
 

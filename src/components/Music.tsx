@@ -53,7 +53,7 @@ export default function Music() {
             Listen to her journey
           </p>
         </Reveal>
-        <Reveal delay={0.08}>
+        <Reveal>
           <h2
             className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black leading-[0.85] tracking-tighter uppercase"
             style={{ textShadow: "0px 0px 40px rgba(255,255,255,0.4)" }}
@@ -66,7 +66,7 @@ export default function Music() {
       {/* Carousel & Player Area */}
       <div className="relative w-full flex flex-col items-center justify-center">
         {/* 3D Carousel */}
-        <div className="relative w-full max-w-5xl h-[450px] sm:h-[500px] md:h-[600px] lg:h-[650px] flex items-center justify-center">
+        <Reveal className="relative w-full max-w-5xl h-[450px] sm:h-[500px] md:h-[600px] lg:h-[650px] flex items-center justify-center">
           {SONGS.map((song, index) => {
             let offset = index - activeIndex;
             if (offset < -Math.floor(SONGS.length / 2)) offset += SONGS.length;
@@ -119,19 +119,21 @@ export default function Music() {
               </motion.div>
             );
           })}
-        </div>
+        </Reveal>
 
         {/* Player UI */}
         <div className="-mt-6 md:-mt-2 flex flex-col items-center w-full z-30 relative">
-          <div className="text-[10px] text-gray-500 tracking-[0.2em] uppercase mb-2">
-            {currentSong.artist}
-          </div>
-          <div className="text-lg md:text-xl font-black leading-[0.85] tracking-tighter uppercase [word-spacing:0.15em] mb-8">
-            {currentSong.title}
-          </div>
+          <Reveal className="flex flex-col items-center">
+            <div className="text-[10px] text-gray-500 tracking-[0.2em] uppercase mb-2">
+              {currentSong.artist}
+            </div>
+            <div className="text-lg md:text-xl font-black leading-[0.85] tracking-tighter uppercase [word-spacing:0.15em] mb-8">
+              {currentSong.title}
+            </div>
+          </Reveal>
 
           {/* Progress */}
-          <div className="flex items-center gap-4 w-full max-w-md text-xs text-gray-500 font-medium mb-3 md:mb-4 px-4">
+          <Reveal className="flex items-center gap-4 w-full max-w-md text-xs text-gray-500 font-medium mb-3 md:mb-4 px-4">
             <span className="w-8 text-right text-gray-300">
               {formatTime(progress)}
             </span>
@@ -160,12 +162,12 @@ export default function Music() {
             <span className="w-8 text-left text-gray-300">
               -{formatTime(duration - progress)}
             </span>
-          </div>
+          </Reveal>
 
           {/* Bottom Area: Controls & Links */}
           <div className="relative w-full flex flex-col md:flex-row items-center justify-center mt-2 md:mt-0 px-4 md:px-0 min-h-[100px]">
             {/* Controls Block */}
-            <div className="flex items-center justify-center gap-12 mb-12 md:mb-0">
+            <Reveal className="flex items-center justify-center gap-12 mb-12 md:mb-0">
               {/* Prev */}
               <button
                 onClick={handlePrev}
@@ -220,10 +222,10 @@ export default function Music() {
                   <path d="M2 24V0l16 12L2 24z M22 0h-4v24h4z" />
                 </svg>
               </button>
-            </div>
+            </Reveal>
 
             {/* External Links Block */}
-            <div className="md:absolute md:left-0 md:top-1/2 md:-translate-y-[70px] flex flex-row md:flex-col justify-center md:justify-start gap-8 md:gap-4 items-center md:items-start w-full md:w-auto z-40">
+            <Reveal className="md:absolute md:left-0 md:top-1/2 md:-translate-y-[70px] flex flex-row md:flex-col justify-center md:justify-start gap-8 md:gap-4 items-center md:items-start w-full md:w-auto z-40">
               {/* Apple Music */}
               <a
                 href="https://music.apple.com/us/artist/shahova/1525596894"
@@ -264,7 +266,7 @@ export default function Music() {
                   Spotify
                 </span>
               </a>
-            </div>
+            </Reveal>
           </div>
         </div>
       </div>

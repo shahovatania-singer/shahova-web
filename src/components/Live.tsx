@@ -83,7 +83,7 @@ export default function Live() {
             Feel the magic of the stage
           </p>
         </Reveal>
-        <Reveal delay={0.08}>
+        <Reveal>
           <h2
             className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black leading-[0.85] tracking-tighter uppercase"
             style={{ textShadow: "0px 0px 40px rgba(255,255,255,0.4)" }}
@@ -96,7 +96,7 @@ export default function Live() {
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 w-full">
         {PERFORMANCES.map((perf) => (
-          <div
+          <Reveal
             key={perf.id}
             onClick={() => openVideo(perf.video, perf.title, perf.image)}
             className="group relative w-full aspect-[4/3] bg-[#050505] cursor-pointer overflow-hidden"
@@ -145,7 +145,7 @@ export default function Live() {
                 {perf.title}
               </div>
             </div>
-          </div>
+          </Reveal>
         ))}
       </div>
 

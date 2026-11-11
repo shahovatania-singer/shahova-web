@@ -117,7 +117,7 @@ export default function Gallery() {
       </Reveal>
 
       {/* Heading */}
-      <Reveal className="mb-12 md:mb-24" delay={0.08}>
+      <Reveal className="mb-12 md:mb-24">
         <h2
           className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black leading-[0.85] tracking-tighter uppercase"
           style={{ textShadow: "0px 0px 40px rgba(255,255,255,0.4)" }}
@@ -130,7 +130,7 @@ export default function Gallery() {
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 grid-flow-dense w-full">
         {images.map((img) => {
           return (
-            <div
+            <Reveal
               key={img.id}
               className={getBoxClass(img.type as LayoutType)}
               onClick={() => setSelectedImage(img.src)}
@@ -144,7 +144,7 @@ export default function Gallery() {
               />
               {/* Red Border Overlay */}
               <div className="absolute inset-0 border-[3px] border-transparent group-hover:border-red-600 transition-colors duration-300 z-20 pointer-events-none"></div>
-            </div>
+            </Reveal>
           );
         })}
       </div>

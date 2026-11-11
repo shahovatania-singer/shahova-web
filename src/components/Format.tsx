@@ -448,7 +448,7 @@ export default function Format() {
       </Reveal>
 
       {/* Heading */}
-      <Reveal className="mb-12 md:mb-24" delay={0.08}>
+      <Reveal className="mb-12 md:mb-24">
         <h2
           className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black leading-[0.85] tracking-tighter uppercase"
           style={{ textShadow: "0px 0px 40px rgba(255,255,255,0.4)" }}
@@ -471,96 +471,99 @@ export default function Format() {
             const isSelected = index === selectedIndex;
 
             return (
-              <div
-                key={format.id}
-                data-format={format.id}
-                onClick={() => !isSelected && handleSelect(index)}
-                className={`transition-all duration-300 border-2 ${
-                  isSelected
-                    ? "border-red-600 bg-red-600/5 cursor-default"
-                    : "border-transparent hover:border-white/10 hover:bg-white/5 cursor-pointer"
-                }`}
-              >
-                <div className="flex items-center gap-4 md:gap-6 p-3 md:p-4">
-                  {/* Thumbnail */}
-                  <div
-                    className={`relative w-16 h-16 md:w-24 md:h-24 bg-zinc-800 overflow-hidden flex-shrink-0 transition-all duration-300 ${!isSelected ? "grayscale opacity-50" : ""}`}
-                  >
-                    <Image
-                      src={format.thumbnail}
-                      alt={format.title}
-                      fill
-                      sizes="(max-width: 768px) 64px, 96px"
-                      className="object-cover"
-                    />
-                  </div>
-
-                  {/* Text Content */}
-                  <div className="flex flex-col flex-1 justify-center min-w-0">
-                    <span
-                      className={`text-2xl md:text-4xl font-black leading-[0.85] tracking-tighter uppercase transition-colors truncate ${
-                        isSelected ? "text-white" : "text-gray-400"
-                      }`}
+              // Wrapped rather than made the Reveal itself: the row has its
+              // own `transition-all`, which would fight the reveal's fade.
+              <Reveal key={format.id}>
+                <div
+                  data-format={format.id}
+                  onClick={() => !isSelected && handleSelect(index)}
+                  className={`transition-all duration-300 border-2 ${
+                    isSelected
+                      ? "border-red-600 bg-red-600/5 cursor-default"
+                      : "border-transparent hover:border-white/10 hover:bg-white/5 cursor-pointer"
+                  }`}
+                >
+                  <div className="flex items-center gap-4 md:gap-6 p-3 md:p-4">
+                    {/* Thumbnail */}
+                    <div
+                      className={`relative w-16 h-16 md:w-24 md:h-24 bg-zinc-800 overflow-hidden flex-shrink-0 transition-all duration-300 ${!isSelected ? "grayscale opacity-50" : ""}`}
                     >
-                      {format.title}
-                    </span>
+                      <Image
+                        src={format.thumbnail}
+                        alt={format.title}
+                        fill
+                        sizes="(max-width: 768px) 64px, 96px"
+                        className="object-cover"
+                      />
+                    </div>
 
-                    {isSelected && (
-                      <div className="flex items-center justify-between mt-2 md:mt-3 md:pr-4">
-                        <span className="text-xs font-semibold tracking-[0.15em] text-gray-300 uppercase">
-                          {format.subtitle}
-                        </span>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActivePopup(format.id);
-                          }}
-                          // className="text-xs md:text-lg font-medium tracking-widest text-white hover:text-red-600 transition-colors cursor-pointer flex-shrink-0"
-                          className="text-xs font-semibold tracking-[0.15em] text-gray-300 uppercase hover:text-red-600 transition-colors cursor-pointer flex-shrink-0"
-                        >
-                          MORE
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                    {/* Text Content */}
+                    <div className="flex flex-col flex-1 justify-center min-w-0">
+                      <span
+                        className={`text-2xl md:text-4xl font-black leading-[0.85] tracking-tighter uppercase transition-colors truncate ${
+                          isSelected ? "text-white" : "text-gray-400"
+                        }`}
+                      >
+                        {format.title}
+                      </span>
 
-                {/* Inline photo and video slot — stacked layout only (see PANEL_MS) */}
-                <AnimatePresence initial={false}>
-                  {isSelected && (
-                    <motion.div
-                      key="photo"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={PANEL_TRANSITION}
-                      className="overflow-hidden lg:hidden"
-                    >
-                      <div className="px-3 pb-3 md:px-4 md:pb-4">
-                        <div className="relative w-full aspect-[4/3] max-h-[70svh] overflow-hidden bg-zinc-900">
-                          <Image
-                            src={format.mainImage}
-                            alt={format.title}
-                            fill
-                            sizes="100vw"
-                            className="object-cover object-[center_30%]"
-                          />
-                          <div
-                            data-video-slot={`stacked:${format.id}`}
-                            className="absolute inset-0"
-                          />
+                      {isSelected && (
+                        <div className="flex items-center justify-between mt-2 md:mt-3 md:pr-4">
+                          <span className="text-xs font-semibold tracking-[0.15em] text-gray-300 uppercase">
+                            {format.subtitle}
+                          </span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActivePopup(format.id);
+                            }}
+                            // className="text-xs md:text-lg font-medium tracking-widest text-white hover:text-red-600 transition-colors cursor-pointer flex-shrink-0"
+                            className="text-xs font-semibold tracking-[0.15em] text-gray-300 uppercase hover:text-red-600 transition-colors cursor-pointer flex-shrink-0"
+                          >
+                            MORE
+                          </button>
                         </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Inline photo and video slot — stacked layout only (see PANEL_MS) */}
+                  <AnimatePresence initial={false}>
+                    {isSelected && (
+                      <motion.div
+                        key="photo"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={PANEL_TRANSITION}
+                        className="overflow-hidden lg:hidden"
+                      >
+                        <div className="px-3 pb-3 md:px-4 md:pb-4">
+                          <div className="relative w-full aspect-[4/3] max-h-[70svh] overflow-hidden bg-zinc-900">
+                            <Image
+                              src={format.mainImage}
+                              alt={format.title}
+                              fill
+                              sizes="100vw"
+                              className="object-cover object-[center_30%]"
+                            />
+                            <div
+                              data-video-slot={`stacked:${format.id}`}
+                              className="absolute inset-0"
+                            />
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </Reveal>
             );
           })}
         </div>
 
         {/* Right Column - Image Stack (side-by-side layout only) */}
-        <div className="relative hidden lg:block lg:w-[55%] flex-shrink-0 pr-12">
+        <Reveal className="relative hidden lg:block lg:w-[55%] flex-shrink-0 pr-12">
           {FORMATS.map((format, i) => {
             // Queue order: whatever plays next sits directly behind the front.
             const index =
@@ -599,7 +602,7 @@ export default function Format() {
               </motion.div>
             );
           })}
-        </div>
+        </Reveal>
       </div>
 
       {/* The one video, carried between the slots above. Not rendered until the
